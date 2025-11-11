@@ -92,6 +92,7 @@ class HuggingFaceLLM:
                 formatted_prompt,
                 max_new_tokens=max_new_tokens or self.max_new_tokens,
                 return_full_text=False,  # Only return generated text
+                use_cache=False,  # Disable cache to avoid DynamicCache.seen_tokens error
             )
 
             generated_text = outputs[0]["generated_text"].strip()
