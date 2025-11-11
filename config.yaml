@@ -16,23 +16,43 @@ frontend:
 
 # LLM Settings (HuggingFace)
 llm:
-  # Model options (choose based on your hardware):
-  # - "microsoft/Phi-3-mini-4k-instruct" (3.8B params, ~8GB RAM)
-  # - "mistralai/Mistral-7B-Instruct-v0.2" (7B params, ~16GB RAM)
-  # - "meta-llama/Llama-3-8B-Instruct" (8B params, ~18GB RAM, requires access)
-  # - "google/gemma-7b-it" (7B params, ~16GB RAM)
+  # ==========================================
+  # MODEL RECOMMENDATIONS FOR RTX 4060 Ti (16GB VRAM)
+  # ==========================================
 
-  model_name: "microsoft/Phi-3-mini-4k-instruct"
+  # 🏆 BEST QUALITY (Recommended for RTX 4060 Ti):
+  # - "mistralai/Mistral-7B-Instruct-v0.3" (7B, excellent quality, ~14GB VRAM)
+  # - "meta-llama/Meta-Llama-3-8B-Instruct" (8B, very good, ~16GB VRAM)
+  # - "google/gemma-2-9b-it" (9B, great reasoning, ~18GB VRAM with 8-bit)
+
+  # ⚡ FASTER OPTIONS (if speed is priority):
+  # - "microsoft/Phi-3-mini-4k-instruct" (3.8B, fast, ~8GB VRAM)
+  # - "microsoft/Phi-3-small-8k-instruct" (7B, good balance)
+
+  # 🚀 ADVANCED (with 8-bit quantization):
+  # - "mistralai/Mistral-Nemo-Instruct-2407" (12B, very powerful)
+  # - "meta-llama/Meta-Llama-3.1-8B-Instruct" (latest Llama)
+  # - "Qwen/Qwen2-7B-Instruct" (excellent for reasoning)
+
+  # ⚠️  NOTE: Llama models may require HuggingFace access approval
+
+  # CURRENT SELECTION (Change this to your preferred model):
+  model_name: "mistralai/Mistral-7B-Instruct-v0.3"
+
   max_new_tokens: 1000
   temperature: 0.7
   top_p: 0.9
   device: "auto"  # Options: "auto", "cuda", "cpu"
-  torch_dtype: "auto"  # Options: "auto", "float16", "float32"
+  torch_dtype: "auto"  # Options: "auto", "float16", "bfloat16"
 
   # Model caching
   cache_dir: "./models"  # Download models here
-  load_in_8bit: false    # Reduce memory usage (slower)
-  load_in_4bit: false    # Further reduce memory (requires bitsandbytes)
+
+  # Quantization (Reduces VRAM usage)
+  # For RTX 4060 Ti 16GB: Usually not needed for 7B-8B models
+  # Enable for larger models (12B+) or to save VRAM
+  load_in_8bit: false    # Halves VRAM usage, slight quality loss
+  load_in_4bit: false    # Quarters VRAM usage, more quality loss (needs bitsandbytes)
 
 # Embeddings Settings
 embeddings:

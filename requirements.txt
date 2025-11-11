@@ -12,6 +12,10 @@ accelerate
 sentencepiece
 protobuf
 
+# Quantization (Optional - for 8-bit/4-bit model loading)
+# Uncomment if using load_in_8bit or load_in_4bit in config.yaml
+# bitsandbytes
+
 # Frontend - Streamlit
 streamlit
 
