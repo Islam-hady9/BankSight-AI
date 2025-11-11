@@ -22,7 +22,7 @@ class BankingDataManager:
             return self.data
 
         try:
-            with open(self.data_file, "r") as f:
+            with open(self.data_file, "r", encoding="utf-8") as f:
                 self.data = json.load(f)
             logger.info("Banking data loaded successfully")
             return self.data
@@ -40,8 +40,8 @@ class BankingDataManager:
     def save_data(self):
         """Save data back to JSON file."""
         try:
-            with open(self.data_file, "w") as f:
-                json.dump(self.data, f, indent=2)
+            with open(self.data_file, "w", encoding="utf-8") as f:
+                json.dump(self.data, f, indent=2, ensure_ascii=False)
             logger.info("Banking data saved")
         except Exception as e:
             logger.error(f"Failed to save banking data: {e}")

@@ -23,7 +23,7 @@ class Config(BaseSettings):
         # Load YAML config
         config_path = Path(__file__).parent.parent / "config.yaml"
         if config_path.exists():
-            with open(config_path, "r") as f:
+            with open(config_path, "r", encoding="utf-8") as f:
                 self._config_data = yaml.safe_load(f)
         super().__init__(**kwargs)
 
