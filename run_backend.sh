@@ -15,4 +15,4 @@ source venv/bin/activate
 
 # Start backend
 echo "Starting FastAPI server..."
-python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload --reload-exclude "models/*" --reload-exclude "data/vector_db/*"
