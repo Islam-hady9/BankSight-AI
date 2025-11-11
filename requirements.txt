@@ -6,7 +6,7 @@ pydantic-settings
 python-multipart
 
 # LLM - HuggingFace
-transformers>=4.35  # Need 4.35+ for Phi-3 support
+transformers>=4.38.0  # Need 4.38+ for DynamicCache.seen_tokens (fixes generation errors)
 torch>=2.0  # PyTorch 2.x required for modern models
 accelerate
 sentencepiece

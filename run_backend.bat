@@ -14,7 +14,6 @@ REM Activate virtual environment
 echo Activating virtual environment...
 call venv\Scripts\activate.bat
 
-REM Start backend with reload exclusions
+REM Start backend (without auto-reload to prevent infinite loop)
 echo Starting FastAPI server...
-echo Excluding models/ and data/vector_db/ from file watching
-python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload --reload-exclude "models/*" --reload-exclude "data/vector_db/*"
+python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000
