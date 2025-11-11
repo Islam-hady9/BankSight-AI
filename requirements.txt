@@ -1,68 +1,40 @@
-# Core Dependencies
+# Backend - FastAPI
 fastapi==0.109.0
 uvicorn[standard]==0.27.0
 pydantic==2.5.3
 pydantic-settings==2.1.0
-python-dotenv==1.0.0
+python-multipart==0.0.6
 
-# AI/ML
-anthropic==0.18.1
-langchain==0.1.6
-langchain-anthropic==0.1.1
+# LLM - HuggingFace
+transformers==4.37.0
+torch==2.1.2
+accelerate==0.26.0
+sentencepiece==0.1.99
+protobuf==4.25.2
+
+# Frontend - Streamlit
+streamlit==1.31.0
+
+# RAG - Vector Database & Embeddings
+chromadb==0.4.22
 sentence-transformers==2.3.1
-tiktoken==0.5.2
-
-# Vector Databases
-pinecone-client==3.0.2
-qdrant-client==1.7.3
-
-# Database
-sqlalchemy==2.0.25
-asyncpg==0.29.0
-psycopg2-binary==2.9.9
-alembic==1.13.1
-pymongo==4.6.1
-motor==3.3.2
-
-# Redis
-redis==5.0.1
-hiredis==2.3.2
 
 # Document Processing
-pypdf==4.0.1
+pypdf2==3.0.1
 pdfplumber==0.10.3
 python-docx==1.1.0
-openpyxl==3.1.2
 pandas==2.2.0
-pillow==10.2.0
-pytesseract==0.3.10
-
-# Audio/Video Processing
-openai-whisper==20231117
-ffmpeg-python==0.2.0
-
-# Authentication & Security
-python-jose[cryptography]==3.3.0
-passlib[bcrypt]==1.7.4
-python-multipart==0.0.6
-cryptography==42.0.2
-
-# HTTP & API
-httpx==0.26.0
-aiohttp==3.9.3
-requests==2.31.0
 
 # Utilities
-python-json-logger==2.0.7
 pyyaml==6.0.1
-click==8.1.7
-rich==13.7.0
-tenacity==8.2.3
+python-dotenv==1.0.0
+requests==2.31.0
+httpx==0.26.0
+aiofiles==23.2.1
 
-# Monitoring
-prometheus-client==0.19.0
-sentry-sdk[fastapi]==1.40.0
-
-# Testing (see requirements-dev.txt for more)
+# Development
+jupyter==1.0.0
+ipykernel==6.29.0
 pytest==8.0.0
 pytest-asyncio==0.23.4
+black==24.1.1

@@ -1,55 +1,89 @@
 # BankSight-AI Configuration
 
-# LLM Settings
+# Backend Settings
+backend:
+  host: "0.0.0.0"
+  port: 8000
+  reload: true  # Auto-reload on code changes
+
+# Frontend Settings
+frontend:
+  host: "localhost"
+  port: 8501
+  backend_url: "http://localhost:8000"
+  page_title: "BankSight AI"
+  page_icon: "🏦"
+
+# LLM Settings (HuggingFace)
 llm:
-  provider: "ollama"  # Options: "ollama" or "huggingface"
-  model: "mistral"    # For Ollama: mistral, llama3, phi3
-                      # For HuggingFace: "microsoft/Phi-3-mini-4k-instruct"
+  # Model options (choose based on your hardware):
+  # - "microsoft/Phi-3-mini-4k-instruct" (3.8B params, ~8GB RAM)
+  # - "mistralai/Mistral-7B-Instruct-v0.2" (7B params, ~16GB RAM)
+  # - "meta-llama/Llama-3-8B-Instruct" (8B params, ~18GB RAM, requires access)
+  # - "google/gemma-7b-it" (7B params, ~16GB RAM)
+
+  model_name: "microsoft/Phi-3-mini-4k-instruct"
+  max_new_tokens: 1000
   temperature: 0.7
-  max_tokens: 1000
-  context_window: 4096
+  top_p: 0.9
+  device: "auto"  # Options: "auto", "cuda", "cpu"
+  torch_dtype: "auto"  # Options: "auto", "float16", "float32"
 
-# Embeddings
+  # Model caching
+  cache_dir: "./models"  # Download models here
+  load_in_8bit: false    # Reduce memory usage (slower)
+  load_in_4bit: false    # Further reduce memory (requires bitsandbytes)
+
+# Embeddings Settings
 embeddings:
-  model: "sentence-transformers/all-MiniLM-L6-v2"
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
   dimension: 384
+  device: "cpu"  # Embeddings don't need GPU
 
-# Vector Store
+# Vector Store Settings
 vector_store:
   type: "chromadb"
   path: "./data/vector_db"
   collection_name: "banking_documents"
 
+# RAG Settings
+rag:
+  chunk_size: 500
+  chunk_overlap: 50
+  max_chunks_per_doc: 1000
+  top_k: 5  # Number of chunks to retrieve
+  similarity_threshold: 0.3
+  enable_reranking: false
+
 # Document Processing
 documents:
   upload_dir: "./data/documents"
-  chunk_size: 500
-  chunk_overlap: 50
+  max_file_size_mb: 50
   supported_formats:
     - pdf
     - txt
     - docx
     - csv
 
-# RAG Settings
-rag:
-  top_k: 5              # Number of documents to retrieve
-  similarity_threshold: 0.5
-  enable_reranking: false
-
-# Banking (Dummy Data)
+# Banking Data
 banking:
   data_file: "./data/banking_dummy_data.json"
   default_user_id: "user_001"
 
 # Agent Settings
 agent:
-  max_history: 10        # Number of conversation turns to keep
-  enable_streaming: true
+  max_conversation_history: 10
+  enable_streaming: false
+  default_intent: "question"
 
-# UI Settings
-ui:
-  title: "BankSight AI - Your Personal Banking Assistant"
-  page_icon: "🏦"
-  layout: "wide"
-  show_sources: true
+# Logging
+logging:
+  level: "INFO"  # Options: DEBUG, INFO, WARNING, ERROR
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# API Settings
+api:
+  cors_origins:
+    - "http://localhost:8501"
+    - "http://127.0.0.1:8501"
+  max_upload_size: 52428800  # 50MB in bytes

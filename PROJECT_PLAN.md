@@ -1,892 +1,615 @@
-# BankSight-AI: Comprehensive Project Plan
+# BankSight-AI: Simplified Learning Project
 
-## 🎯 Project Overview
-
-BankSight-AI is an intelligent banking agent that combines dynamic RAG (Retrieval-Augmented Generation) with MCP (Model Context Protocol) to provide customers with instant access to banking information and the ability to perform banking operations through natural language conversations.
+A **simple, local-first** AI banking assistant to learn RAG and AI agents - runs entirely on your personal machine!
 
 ---
 
-## 🏗️ System Architecture
+## 🎯 Project Goals
 
-### Core Components
+This is a **learning project** to understand:
+1. **RAG (Retrieval-Augmented Generation)** - How to make AI answer questions from your documents
+2. **AI Agents** - How to make AI perform actions based on user requests
+3. **Vector Databases** - How embeddings and semantic search work
+4. **Document Processing** - How to extract and chunk documents
+
+**NOT a goal**: Production-ready banking system, enterprise features, cloud deployment
+
+---
+
+## ✨ What You'll Build
+
+A simple chat interface where you can:
+- **Upload banking documents** (policies, FAQs, statements) and ask questions about them
+- **Perform banking actions** via natural language (check balance, transfer money, view transactions)
+- **Use dummy data** - fake accounts, transactions, users for testing
+
+**Everything runs locally** - no cloud services, no paid APIs!
+
+---
+
+## 🏗️ Simple Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        Client Layer                          │
-│  (Web UI / Mobile App / API / Chat Interface)               │
-└─────────────────────────────────────────────────────────────┘
-                              │
-┌─────────────────────────────────────────────────────────────┐
-│                    API Gateway & Auth                        │
-│  - Authentication / Authorization                            │
-│  - Rate Limiting / Security                                  │
-└─────────────────────────────────────────────────────────────┘
-                              │
-        ┌─────────────────────┴─────────────────────┐
-        │                                           │
-┌───────────────────┐                    ┌──────────────────────┐
-│   AI Agent Core   │                    │   MCP Action Engine  │
-│                   │                    │                      │
-│ - Query Router    │◄───────────────────┤ - Account Ops       │
-│ - Intent Clf.     │                    │ - Transactions      │
-│ - Context Mgmt    │                    │ - Payments          │
-│ - Response Gen    │                    │ - Analytics         │
-└─────────┬─────────┘                    └──────────────────────┘
-          │                                         │
-          │                                         │
-┌─────────┴─────────┐                    ┌──────────┴───────────┐
-│   RAG System      │                    │  Banking Backend     │
-│                   │                    │                      │
-│ - Doc Ingestion   │                    │ - Core Banking       │
-│ - Vector Search   │                    │ - Transaction DB     │
-│ - Embedding       │                    │ - Customer Data      │
-│ - Retrieval       │                    │ - Integration APIs   │
-└─────────┬─────────┘                    └──────────────────────┘
-          │
-┌─────────┴─────────┐
-│  Document Store   │
-│                   │
-│ - Vector DB       │
-│ - Document DB     │
-│ - File Storage    │
-└───────────────────┘
+┌─────────────────────────────────────────┐
+│      Streamlit Web Interface            │
+│      (Chat UI)                          │
+└─────────────┬───────────────────────────┘
+              │
+┌─────────────▼───────────────────────────┐
+│         AI Agent                        │
+│  - Understands user intent              │
+│  - Routes to RAG or Actions             │
+└─────────────┬───────────────────────────┘
+              │
+     ┌────────┴────────┐
+     │                 │
+┌────▼─────┐    ┌─────▼──────┐
+│   RAG    │    │  Actions   │
+│  System  │    │  Handler   │
+└────┬─────┘    └─────┬──────┘
+     │                │
+┌────▼─────┐    ┌─────▼──────┐
+│ ChromaDB │    │   Dummy    │
+│ (Vector) │    │   Data     │
+│          │    │  (JSON)    │
+└──────────┘    └────────────┘
 ```
 
----
-
-## 📋 Feature Set
-
-### 1. Dynamic RAG System
-
-#### 1.1 Document Ingestion Pipeline
-- **Supported File Types:**
-  - Documents: PDF, DOCX, DOC, TXT, RTF, MD
-  - Spreadsheets: XLSX, XLS, CSV
-  - Presentations: PPTX, PPT
-  - Images: PNG, JPG, JPEG (with OCR)
-  - Audio: MP3, WAV, M4A (with transcription)
-  - Video: MP4, AVI (with transcription)
-  - Banking-specific: XML (for statements), JSON, QFX, OFX
-
-#### 1.2 Document Processing
-- **Intelligent Chunking:**
-  - Semantic chunking (preserve context)
-  - Hierarchical chunking (document structure)
-  - Overlap strategy for continuity
-  - Metadata extraction (date, type, author, etc.)
-
-- **Content Enhancement:**
-  - Entity extraction (names, dates, amounts, account numbers)
-  - Relationship mapping
-  - Category tagging
-  - Sentiment analysis
-
-#### 1.3 Vector Database & Search
-- **Embedding Strategy:**
-  - Multi-model embeddings (text, images, tables)
-  - Dimension: 1536 (OpenAI) or 768 (sentence-transformers)
-  - Hybrid search (dense + sparse)
-
-- **Retrieval Methods:**
-  - Semantic similarity search
-  - Keyword-based search (BM25)
-  - Metadata filtering
-  - Re-ranking with cross-encoders
-  - MMR (Maximal Marginal Relevance) for diversity
-
-#### 1.4 Dynamic Context Management
-- **Adaptive Context:**
-  - Conversation history tracking
-  - User profile context
-  - Session state management
-  - Multi-turn coherence
-
-- **Context Window Optimization:**
-  - Relevance scoring
-  - Context compression
-  - Summarization for long documents
-  - Citation tracking
+**That's it!** No Kubernetes, no microservices, no complex infrastructure.
 
 ---
 
-### 2. AI Agent Capabilities
+## 🛠️ Technology Stack (Simplified)
 
-#### 2.1 Query Understanding
-- **Intent Classification:**
-  - Information retrieval (RAG)
-  - Action execution (MCP)
-  - Conversational/clarification
-  - Complex multi-step tasks
+### Core (No Paid APIs!)
+- **LLM**: Local HuggingFace model via `transformers` or `ollama`
+  - Options: Mistral-7B, Llama-3-8B, Phi-3, Gemma-7B
+- **Embeddings**: `sentence-transformers` (all-MiniLM-L6-v2)
+- **Vector DB**: ChromaDB (runs in-memory or local file)
+- **Web UI**: Streamlit (simple Python web framework)
+- **Backend**: Just Python scripts, no FastAPI needed
 
-- **Entity Recognition:**
-  - Account numbers
-  - Transaction IDs
-  - Dates and amounts
-  - Merchant names
-  - Category types
+### Document Processing
+- **PDFs**: PyPDF2 or pdfplumber
+- **Text files**: Built-in Python
+- **CSV**: pandas
 
-#### 2.2 Response Generation
-- **Multi-Source Synthesis:**
-  - RAG document citations
-  - Real-time data from banking systems
-  - Historical conversation context
-  - Personalized recommendations
-
-- **Response Quality:**
-  - Accuracy verification
-  - Hallucination detection
-  - Source attribution
-  - Confidence scoring
+### Data Storage
+- **Documents**: Local filesystem
+- **Banking Data**: JSON files (dummy accounts, transactions)
+- **Vector Store**: ChromaDB (local file)
+- **Chat History**: JSON or SQLite
 
 ---
 
-### 3. MCP (Model Context Protocol) Actions
-
-#### 3.1 Account Management
-- **Query Actions:**
-  - Check account balance (savings, checking, credit)
-  - View account details
-  - List all accounts
-  - Get account statements
-  - Check credit score
-  - View spending limits
-
-- **Modification Actions:**
-  - Update account preferences
-  - Set up alerts/notifications
-  - Link/unlink accounts
-  - Request account closure
-
-#### 3.2 Transaction Operations
-- **Query Actions:**
-  - Transaction history (filtered by date, amount, merchant)
-  - Pending transactions
-  - Recurring payments
-  - Transaction categorization
-  - Search transactions by description
-  - Export transaction data
-
-- **Execution Actions:**
-  - Initiate fund transfers (internal/external)
-  - Schedule future transfers
-  - Cancel pending transactions
-  - Dispute transactions
-  - Download receipts
-
-#### 3.3 Bill Payments
-- **Management:**
-  - List payees
-  - Add/remove payees
-  - View payment history
-  - Set up auto-pay
-  - Cancel scheduled payments
-
-- **Execution:**
-  - Make one-time payments
-  - Schedule recurring payments
-  - Pay multiple bills
-  - Set payment reminders
-
-#### 3.4 Card Management
-- **Query Actions:**
-  - List active cards
-  - View card details (masked)
-  - Check card limits
-  - View rewards/points
-  - Transaction alerts
-
-- **Control Actions:**
-  - Activate/deactivate cards
-  - Report lost/stolen
-  - Request replacement
-  - Set spending limits
-  - Enable/disable international usage
-  - Freeze/unfreeze cards
-
-#### 3.5 Fraud Detection & Security
-- **Monitoring:**
-  - Real-time fraud alerts
-  - Unusual activity detection
-  - Merchant verification
-  - Location-based alerts
-  - Large transaction notifications
-
-- **Actions:**
-  - Report suspicious activity
-  - Lock account temporarily
-  - Review flagged transactions
-  - Update security settings
-
-#### 3.6 Loan & Credit Management
-- **Information:**
-  - Loan application status
-  - Loan balance & payment schedule
-  - Interest rates
-  - Pre-approval eligibility
-  - Credit utilization
-
-- **Actions:**
-  - Apply for loans
-  - Make extra payments
-  - Request payment extension
-  - Get payoff quotes
-  - Refinancing options
-
-#### 3.7 Investment & Wealth Management
-- **Portfolio Overview:**
-  - Asset allocation
-  - Performance metrics
-  - Dividend tracking
-  - Market updates
-
-- **Actions:**
-  - Buy/sell securities
-  - Rebalance portfolio
-  - Set up automatic investments
-  - Get investment recommendations
-  - Risk assessment
-
-#### 3.8 Financial Analytics & Insights
-- **Spending Analysis:**
-  - Category breakdown
-  - Monthly spending trends
-  - Budget vs. actual
-  - Year-over-year comparison
-  - Merchant analysis
-
-- **Recommendations:**
-  - Savings opportunities
-  - Budget optimization
-  - Bill negotiation suggestions
-  - Investment strategies
-  - Debt payoff plans
-
-#### 3.9 Customer Support
-- **Self-Service:**
-  - FAQ retrieval (RAG)
-  - Policy lookups
-  - Fee schedules
-  - Branch/ATM locator
-  - Service hours
-
-- **Actions:**
-  - File complaints
-  - Request callbacks
-  - Schedule appointments
-  - Live agent escalation
-  - Feedback submission
-
----
-
-## 🔒 Security & Compliance
-
-### Authentication & Authorization
-- Multi-factor authentication (MFA)
-- Biometric authentication
-- OAuth 2.0 / OIDC
-- Role-based access control (RBAC)
-- Session management & timeouts
-
-### Data Security
-- End-to-end encryption (TLS 1.3)
-- Data-at-rest encryption (AES-256)
-- PII detection & masking
-- Secure key management (HSM/KMS)
-- Data anonymization for analytics
-
-### Compliance
-- **Regulations:**
-  - GDPR (EU)
-  - CCPA (California)
-  - PCI DSS (payment cards)
-  - SOC 2 Type II
-  - Banking regulations (varies by region)
-
-- **Features:**
-  - Audit logging (immutable)
-  - Right to be forgotten
-  - Data export capabilities
-  - Consent management
-  - Retention policies
-
-### AI Safety
-- Content filtering
-- Bias detection & mitigation
-- Explainable AI (XAI)
-- Human-in-the-loop for critical actions
-- Rate limiting & abuse prevention
-
----
-
-## 🛠️ Technology Stack
-
-### Backend
-- **Language:** Python 3.11+
-- **Framework:** FastAPI / Flask
-- **AI/ML:**
-  - Anthropic Claude API (primary LLM)
-  - LangChain / LlamaIndex (orchestration)
-  - Sentence-Transformers (embeddings)
-  - OpenAI API (alternative)
-
-### RAG Components
-- **Vector Database:**
-  - Pinecone (managed)
-  - Weaviate (self-hosted)
-  - Qdrant (lightweight)
-  - ChromaDB (development)
-
-- **Document Processing:**
-  - PyPDF2 / pdfplumber (PDF)
-  - python-docx (Word)
-  - openpyxl (Excel)
-  - pytesseract (OCR)
-  - whisper (audio transcription)
-  - Beautiful Soup / trafilatura (web)
-
-### MCP Implementation
-- **MCP Server:** Python MCP SDK
-- **Tools:** Custom banking tools/functions
-- **Integration:** Banking API connectors
-
-### Database
-- **Primary DB:** PostgreSQL 15+
-- **Document Store:** MongoDB / DocumentDB
-- **Cache:** Redis
-- **Message Queue:** RabbitMQ / Kafka
-
-### Infrastructure
-- **Containerization:** Docker + Docker Compose
-- **Orchestration:** Kubernetes (production)
-- **CI/CD:** GitHub Actions
-- **Monitoring:** Prometheus + Grafana
-- **Logging:** ELK Stack (Elasticsearch, Logstash, Kibana)
-
-### Frontend (Optional)
-- **Web:** React / Next.js
-- **Mobile:** React Native / Flutter
-- **Chat UI:** Streamlit / Gradio (for demo)
-
----
-
-## 📁 Project Structure
+## 📁 Simplified Project Structure
 
 ```
 BankSight-AI/
-├── .github/
-│   └── workflows/           # CI/CD pipelines
 ├── src/
-│   ├── agent/              # AI agent core
-│   │   ├── __init__.py
-│   │   ├── agent.py        # Main agent orchestrator
-│   │   ├── intent_classifier.py
-│   │   ├── query_router.py
-│   │   ├── response_generator.py
-│   │   └── context_manager.py
-│   ├── rag/                # RAG system
-│   │   ├── __init__.py
-│   │   ├── ingestion/
-│   │   │   ├── __init__.py
-│   │   │   ├── parsers/    # File type parsers
-│   │   │   ├── chunking.py
-│   │   │   ├── embeddings.py
-│   │   │   └── pipeline.py
-│   │   ├── retrieval/
-│   │   │   ├── __init__.py
-│   │   │   ├── vector_store.py
-│   │   │   ├── hybrid_search.py
-│   │   │   └── reranker.py
-│   │   └── processing/
-│   │       ├── __init__.py
-│   │       ├── entity_extraction.py
-│   │       ├── metadata.py
-│   │       └── preprocessing.py
-│   ├── mcp/                # MCP actions
-│   │   ├── __init__.py
-│   │   ├── server.py       # MCP server
-│   │   ├── tools/          # Banking tools
-│   │   │   ├── __init__.py
-│   │   │   ├── accounts.py
-│   │   │   ├── transactions.py
-│   │   │   ├── payments.py
-│   │   │   ├── cards.py
-│   │   │   ├── loans.py
-│   │   │   ├── investments.py
-│   │   │   └── analytics.py
-│   │   └── integrations/   # Banking API connectors
-│   │       ├── __init__.py
-│   │       └── mock_bank_api.py
-│   ├── api/                # REST API
-│   │   ├── __init__.py
-│   │   ├── main.py         # FastAPI app
-│   │   ├── routes/
-│   │   │   ├── __init__.py
-│   │   │   ├── chat.py
-│   │   │   ├── documents.py
-│   │   │   └── actions.py
-│   │   ├── auth.py
-│   │   └── middleware.py
-│   ├── security/           # Security modules
-│   │   ├── __init__.py
-│   │   ├── auth.py
-│   │   ├── encryption.py
-│   │   ├── pii_detection.py
-│   │   └── audit_log.py
-│   ├── database/           # Database models
-│   │   ├── __init__.py
-│   │   ├── models.py
-│   │   ├── repositories.py
-│   │   └── migrations/
-│   └── utils/              # Utilities
-│       ├── __init__.py
-│       ├── config.py
-│       ├── logger.py
-│       └── exceptions.py
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
+│   ├── rag/
+│   │   ├── document_loader.py    # Load and parse documents
+│   │   ├── embeddings.py         # Generate embeddings
+│   │   ├── vector_store.py       # ChromaDB integration
+│   │   └── retriever.py          # Search and retrieve
+│   ├── agent/
+│   │   ├── llm.py                # LLM interface (local model)
+│   │   ├── intent_classifier.py  # Classify user intent
+│   │   └── agent.py              # Main orchestrator
+│   ├── actions/
+│   │   ├── banking_data.py       # Load dummy data
+│   │   └── banking_actions.py    # Account, transaction actions
+│   └── app.py                    # Streamlit app (main entry)
 ├── data/
-│   ├── documents/          # Uploaded documents
-│   ├── embeddings/         # Vector embeddings
-│   └── sample_data/        # Test data
-├── notebooks/              # Jupyter notebooks for experiments
-├── docs/
-│   ├── API.md
-│   ├── ARCHITECTURE.md
-│   ├── MCP_TOOLS.md
-│   └── DEPLOYMENT.md
-├── scripts/
-│   ├── setup.sh
-│   ├── ingest_documents.py
-│   └── seed_data.py
-├── docker/
-│   ├── Dockerfile
-│   ├── docker-compose.yml
-│   └── docker-compose.dev.yml
-├── .env.example
-├── .gitignore
-├── requirements.txt
-├── requirements-dev.txt
-├── setup.py
-├── pytest.ini
-├── README.md
-└── PROJECT_PLAN.md
+│   ├── documents/                # Upload your docs here
+│   ├── banking_dummy_data.json   # Fake accounts & transactions
+│   └── vector_db/                # ChromaDB storage
+├── notebooks/
+│   └── experiments.ipynb         # For testing/learning
+├── requirements.txt              # Simple dependencies
+├── config.yaml                   # Simple config
+├── setup.sh                      # Quick setup script
+└── README.md
+```
+
+**Under 20 files total!**
+
+---
+
+## 🚀 Features (Simplified)
+
+### 1. RAG System
+- **Upload documents**: PDFs, TXT files
+- **Automatic processing**: Extract text, chunk, embed
+- **Ask questions**: "What are the account opening requirements?"
+- **Get answers with sources**: Shows which document the answer came from
+
+### 2. Banking Actions (Dummy Data)
+- **Check balance**: "What's my checking account balance?"
+- **View transactions**: "Show my last 5 transactions"
+- **Transfer money**: "Transfer $100 from checking to savings"
+- **Search transactions**: "Show all transactions over $50"
+- **Account info**: "List all my accounts"
+
+### 3. Chat Interface
+- Simple Streamlit chat UI
+- Upload documents through the UI
+- Conversation history
+- Clear, simple responses
+
+---
+
+## 📊 Dummy Banking Data
+
+### Sample Data Structure
+
+```json
+{
+  "users": [
+    {
+      "id": "user_001",
+      "name": "John Doe",
+      "email": "john@example.com"
+    }
+  ],
+  "accounts": [
+    {
+      "id": "acc_001",
+      "user_id": "user_001",
+      "type": "checking",
+      "balance": 5430.50,
+      "account_number": "****1234"
+    },
+    {
+      "id": "acc_002",
+      "user_id": "user_001",
+      "type": "savings",
+      "balance": 12500.00,
+      "account_number": "****5678"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "txn_001",
+      "account_id": "acc_001",
+      "date": "2024-01-15",
+      "amount": -45.99,
+      "merchant": "Amazon",
+      "category": "shopping"
+    }
+  ]
+}
+```
+
+You can easily modify this to test different scenarios!
+
+---
+
+## 🎓 Implementation Roadmap (4 Weeks)
+
+### Week 1: RAG System
+**Goal**: Get document Q&A working
+
+**Day 1-2: Setup & Document Loading**
+- [ ] Install dependencies
+- [ ] Create document loader for PDF and TXT
+- [ ] Test loading sample documents
+
+**Day 3-4: Embeddings & Vector Store**
+- [ ] Set up sentence-transformers
+- [ ] Integrate ChromaDB
+- [ ] Index sample documents
+- [ ] Test basic search
+
+**Day 5-7: LLM & RAG Pipeline**
+- [ ] Set up local LLM (Ollama or HuggingFace)
+- [ ] Create RAG pipeline: query → retrieve → generate
+- [ ] Test with sample questions
+- [ ] Add source citations
+
+**Milestone**: Ask questions about uploaded documents and get answers!
+
+---
+
+### Week 2: Banking Actions
+**Goal**: Perform actions on dummy data
+
+**Day 1-2: Dummy Data**
+- [ ] Create JSON with fake accounts, transactions
+- [ ] Write data loader
+- [ ] Add more sample data
+
+**Day 3-5: Action Functions**
+- [ ] Implement `get_account_balance()`
+- [ ] Implement `get_transactions()`
+- [ ] Implement `transfer_funds()`
+- [ ] Implement `search_transactions()`
+- [ ] Test all functions
+
+**Day 6-7: Action Handler**
+- [ ] Create action registry
+- [ ] Parse user requests into function calls
+- [ ] Execute actions
+- [ ] Format results for display
+
+**Milestone**: Perform banking operations via function calls!
+
+---
+
+### Week 3: AI Agent
+**Goal**: Route queries intelligently
+
+**Day 1-3: Intent Classification**
+- [ ] Create simple prompt-based classifier
+- [ ] Detect: question vs action vs chitchat
+- [ ] Extract parameters (amounts, account types, dates)
+- [ ] Test with sample queries
+
+**Day 4-5: Agent Orchestrator**
+- [ ] Route questions → RAG system
+- [ ] Route actions → Action handler
+- [ ] Handle multi-step queries
+- [ ] Add error handling
+
+**Day 6-7: Conversation Management**
+- [ ] Store chat history
+- [ ] Use history in context
+- [ ] Handle follow-up questions
+
+**Milestone**: Agent routes queries correctly and maintains context!
+
+---
+
+### Week 4: UI & Polish
+**Goal**: Create usable interface
+
+**Day 1-3: Streamlit Interface**
+- [ ] Create chat interface
+- [ ] Add document upload
+- [ ] Display conversation history
+- [ ] Add clear/reset buttons
+
+**Day 4-5: Improvements**
+- [ ] Better formatting for responses
+- [ ] Loading indicators
+- [ ] Error messages
+- [ ] Add example queries
+
+**Day 6-7: Documentation & Demo**
+- [ ] Write usage guide
+- [ ] Create demo video/screenshots
+- [ ] Document learnings
+- [ ] Add more sample data
+
+**Milestone**: Working demo you can show off! 🎉
+
+---
+
+## 💻 LLM Options (Local Models)
+
+### Option 1: Ollama (Easiest!)
+```bash
+# Install Ollama
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Download a model (7B is good for personal machine)
+ollama pull mistral
+ollama pull llama3:8b
+ollama pull phi3
+
+# Use in Python
+from langchain_community.llms import Ollama
+llm = Ollama(model="mistral")
+```
+
+**Pros**: Super easy, fast, great for experimentation
+**Cons**: Needs ~8GB RAM, models are smaller (less capable)
+
+### Option 2: HuggingFace Transformers
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model_name = "microsoft/Phi-3-mini-4k-instruct"
+model = AutoModelForCausalLM.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+```
+
+**Pros**: More control, many models available
+**Cons**: Slower, more GPU memory needed
+
+### Option 3: LM Studio (GUI)
+Download from lmstudio.ai - run models with a nice interface!
+
+**Recommendation**: Start with Ollama + Mistral (7B) - easiest to set up!
+
+---
+
+## 📦 Simple Requirements
+
+```txt
+# Core
+streamlit==1.31.0
+chromadb==0.4.22
+sentence-transformers==2.3.1
+langchain==0.1.6
+langchain-community==0.0.20
+
+# LLM (choose one)
+ollama  # Easiest
+# OR
+transformers==4.37.0
+torch==2.1.2
+
+# Document processing
+pypdf2==3.0.1
+python-docx==1.1.0
+pandas==2.2.0
+
+# Utilities
+pyyaml==6.0.1
+python-dotenv==1.0.0
+```
+
+**Total size**: ~2-3GB (including a 7B model)
+
+---
+
+## ⚙️ Configuration (Simple YAML)
+
+```yaml
+# config.yaml
+llm:
+  provider: ollama  # or huggingface
+  model: mistral    # or microsoft/Phi-3-mini-4k-instruct
+  temperature: 0.7
+
+embeddings:
+  model: sentence-transformers/all-MiniLM-L6-v2
+
+vector_store:
+  type: chromadb
+  path: ./data/vector_db
+
+documents:
+  chunk_size: 500
+  chunk_overlap: 50
+
+banking:
+  data_file: ./data/banking_dummy_data.json
+  default_user: user_001
 ```
 
 ---
 
-## 🚀 Implementation Roadmap
+## 🚀 Quick Start (Simplified)
 
-### Phase 1: Foundation (Weeks 1-2)
-**Goal:** Set up project infrastructure and core components
+### 1. Setup (5 minutes)
 
-- [ ] Project setup & repository structure
-- [ ] Docker containerization
-- [ ] Database setup (PostgreSQL + MongoDB + Redis)
-- [ ] Basic FastAPI application
-- [ ] Authentication & authorization framework
-- [ ] Logging & monitoring setup
-- [ ] CI/CD pipeline (GitHub Actions)
+```bash
+# Clone repo
+git clone <your-repo>
+cd BankSight-AI
 
-### Phase 2: RAG System - Document Processing (Weeks 3-4)
-**Goal:** Build document ingestion and processing pipeline
+# Install Ollama
+curl -fsSL https://ollama.ai/install.sh | sh
+ollama pull mistral
 
-- [ ] Implement file parsers for all supported types
-  - [ ] PDF parser
-  - [ ] Office documents (DOCX, XLSX, PPTX)
-  - [ ] Text files (TXT, MD, CSV)
-  - [ ] OCR for images
-  - [ ] Audio/video transcription
-- [ ] Intelligent chunking strategies
-- [ ] Metadata extraction
-- [ ] Entity recognition
-- [ ] Document preprocessing pipeline
-- [ ] Upload API endpoint
+# Install Python dependencies
+pip install -r requirements.txt
 
-### Phase 3: RAG System - Vector Database & Retrieval (Weeks 5-6)
-**Goal:** Implement vector storage and retrieval mechanisms
+# Done! That's it.
+```
 
-- [ ] Vector database integration (choose: Pinecone/Qdrant/Weaviate)
-- [ ] Embedding generation service
-- [ ] Hybrid search implementation (semantic + keyword)
-- [ ] Re-ranking system
-- [ ] Metadata filtering
-- [ ] Context window management
-- [ ] Document indexing pipeline
-- [ ] Retrieval API endpoints
+### 2. Run the App
 
-### Phase 4: AI Agent Core (Weeks 7-8)
-**Goal:** Build the intelligent agent orchestrator
+```bash
+streamlit run src/app.py
+```
 
-- [ ] Claude API integration
-- [ ] Intent classification system
-- [ ] Query router (RAG vs MCP vs conversational)
-- [ ] Conversation state management
-- [ ] Context manager
-- [ ] Response generation with citations
-- [ ] Hallucination detection
-- [ ] Multi-turn conversation handling
-- [ ] Chat API endpoints
+Open browser → http://localhost:8501
 
-### Phase 5: MCP Integration - Core Banking Actions (Weeks 9-10)
-**Goal:** Implement essential banking operations via MCP
+### 3. Try It Out
 
-- [ ] MCP server setup
-- [ ] Mock banking backend (for training)
-- [ ] Account management tools
-  - [ ] Balance inquiry
-  - [ ] Account details
-  - [ ] List accounts
-- [ ] Transaction tools
-  - [ ] Transaction history
-  - [ ] Search transactions
-  - [ ] Fund transfers
-- [ ] Payment tools
-  - [ ] Bill payment
-  - [ ] Payee management
-  - [ ] Schedule payments
-- [ ] Tool registration & discovery
-- [ ] Action execution framework
-- [ ] Error handling & validation
-
-### Phase 6: MCP Integration - Advanced Features (Weeks 11-12)
-**Goal:** Implement advanced banking capabilities
-
-- [ ] Card management tools
-- [ ] Fraud detection & alerts
-- [ ] Loan management tools
-- [ ] Investment tools (basic)
-- [ ] Financial analytics tools
-- [ ] Customer support tools
-- [ ] Multi-step action workflows
-- [ ] Action confirmation & rollback
-
-### Phase 7: Security & Compliance (Weeks 13-14)
-**Goal:** Implement security measures and compliance features
-
-- [ ] PII detection & masking
-- [ ] Data encryption (at-rest and in-transit)
-- [ ] Audit logging system
-- [ ] GDPR compliance features
-  - [ ] Data export
-  - [ ] Right to be forgotten
-  - [ ] Consent management
-- [ ] Rate limiting & abuse prevention
-- [ ] Security testing (penetration testing)
-- [ ] Compliance documentation
-
-### Phase 8: Analytics & Insights (Weeks 15-16)
-**Goal:** Build intelligent analytics and recommendation engine
-
-- [ ] Spending analysis engine
-- [ ] Budget tracking & optimization
-- [ ] Savings recommendations
-- [ ] Investment recommendations (basic)
-- [ ] Debt management advice
-- [ ] Visualization components
-- [ ] Personalization engine
-- [ ] Analytics dashboard
-
-### Phase 9: User Interface (Weeks 17-18)
-**Goal:** Create user-friendly interfaces
-
-- [ ] Web chat interface (React/Streamlit)
-- [ ] Document upload interface
-- [ ] Action confirmation dialogs
-- [ ] Transaction visualizations
-- [ ] Mobile-responsive design
-- [ ] Accessibility features (WCAG 2.1)
-- [ ] Multi-language support (i18n)
-
-### Phase 10: Testing & Optimization (Weeks 19-20)
-**Goal:** Comprehensive testing and performance optimization
-
-- [ ] Unit tests (>80% coverage)
-- [ ] Integration tests
-- [ ] End-to-end tests
-- [ ] Load testing
-- [ ] RAG retrieval quality evaluation
-- [ ] Agent response quality evaluation
-- [ ] Performance optimization
-  - [ ] Query latency reduction
-  - [ ] Caching strategy
-  - [ ] Database query optimization
-- [ ] Security audit
-
-### Phase 11: Documentation & Training (Week 21)
-**Goal:** Complete documentation and training materials
-
-- [ ] API documentation (OpenAPI/Swagger)
-- [ ] Architecture documentation
-- [ ] MCP tools documentation
-- [ ] Deployment guide
-- [ ] User manual
-- [ ] Training materials
-- [ ] Demo videos
-- [ ] Code comments & docstrings
-
-### Phase 12: Deployment & Monitoring (Week 22)
-**Goal:** Production deployment and monitoring
-
-- [ ] Production environment setup
-- [ ] Kubernetes deployment
-- [ ] Monitoring dashboards (Grafana)
-- [ ] Alert configuration
-- [ ] Backup & disaster recovery
-- [ ] Performance monitoring
-- [ ] User feedback collection
-- [ ] Continuous improvement pipeline
+1. **Upload a document** (banking policy PDF)
+2. **Ask a question**: "What are the fees for wire transfers?"
+3. **Try an action**: "Show my account balance"
+4. **Make a transfer**: "Transfer $50 from checking to savings"
 
 ---
 
-## 📊 Key Performance Indicators (KPIs)
+## 📝 Sample Documents to Test
 
-### RAG System
-- **Retrieval Accuracy:** >90% relevant documents in top 5 results
-- **Response Time:** <2 seconds for document retrieval
-- **Document Processing:** <30 seconds for 10MB document
-- **Citation Accuracy:** >95% correct source attribution
+Create these simple documents to get started:
 
-### AI Agent
-- **Intent Classification Accuracy:** >95%
-- **Response Quality:** >4.5/5 user rating
-- **Hallucination Rate:** <2%
-- **Multi-turn Coherence:** >90%
+**banking_policy.txt**:
+```
+Account Opening Requirements:
+- Valid government ID
+- Proof of address
+- Minimum deposit: $100 for checking, $500 for savings
 
-### MCP Actions
-- **Action Success Rate:** >99%
-- **Action Latency:** <1 second
-- **Transaction Accuracy:** 100%
-- **Fraud Detection Rate:** >85%
+Wire Transfer Fees:
+- Domestic: $25
+- International: $45
 
-### System Performance
-- **API Response Time:** <500ms (p95)
-- **Uptime:** >99.9%
-- **Concurrent Users:** Support 10,000+
-- **Database Query Time:** <100ms (p95)
+Overdraft Protection:
+- Available for checking accounts
+- Fee: $35 per occurrence
+```
 
-### User Experience
-- **User Satisfaction:** >4.5/5
-- **Task Completion Rate:** >90%
-- **Error Rate:** <1%
-- **Average Session Duration:** >5 minutes
+**faq.txt**:
+```
+Q: How do I reset my password?
+A: Click "Forgot Password" on the login page.
 
----
+Q: What is the daily ATM withdrawal limit?
+A: $500 for standard accounts, $1000 for premium accounts.
+```
 
-## 💡 Advanced Features (Future Enhancements)
-
-### 1. Multi-Modal Capabilities
-- Voice input/output (speech-to-text, text-to-speech)
-- Image understanding (check images, receipts)
-- Document comparison and analysis
-- Video call integration for complex issues
-
-### 2. Predictive Analytics
-- Cash flow forecasting
-- Spending predictions
-- Bill due date predictions
-- Investment opportunity alerts
-- Fraud prediction (before it happens)
-
-### 3. Personalization
-- Learning user preferences
-- Personalized financial advice
-- Custom alert thresholds
-- Communication style adaptation
-- Proactive recommendations
-
-### 4. Advanced RAG Features
-- Multi-document reasoning
-- Cross-document synthesis
-- Temporal reasoning (time-series data)
-- Graph RAG for relationship queries
-- Hypothetical document embeddings (HyDE)
-
-### 5. Integration Ecosystem
-- Third-party app integrations (budgeting apps)
-- Aggregation services (Plaid, Yodlee)
-- Payment gateways (Stripe, PayPal)
-- Investment platforms
-- Credit bureaus
-
-### 6. Advanced Security
-- Behavioral biometrics
-- Anomaly detection (ML-based)
-- Zero-knowledge proofs
-- Homomorphic encryption
-- Decentralized identity
-
-### 7. Collaboration Features
-- Joint accounts management
-- Family banking features
-- Business account features
-- Authorized user management
-- Shared financial goals
+Upload these and ask questions!
 
 ---
 
-## 🧪 Testing Strategy
+## 🎯 Learning Objectives
 
-### Unit Testing
-- Test coverage: >80%
-- Mock external dependencies
-- Test RAG components independently
-- Test MCP tools in isolation
-- Test utility functions
+By completing this project, you'll learn:
 
-### Integration Testing
-- API endpoint testing
-- Database integration tests
-- RAG pipeline end-to-end
-- MCP action workflows
-- Authentication flows
+### RAG Concepts
+- ✅ How to chunk documents effectively
+- ✅ How embeddings work (vector representations)
+- ✅ Semantic search vs keyword search
+- ✅ Prompt engineering for retrieval
+- ✅ Citation and source tracking
 
-### End-to-End Testing
-- User journey testing
-- Multi-turn conversations
-- Complex action sequences
-- Document upload → query → action
-- Error recovery scenarios
+### AI Agents
+- ✅ Intent classification
+- ✅ Function calling / tool use
+- ✅ Conversation state management
+- ✅ Error handling in AI systems
 
-### Performance Testing
-- Load testing (10,000+ concurrent users)
-- Stress testing
-- Endurance testing (24h+)
-- Spike testing
-- Scalability testing
-
-### Security Testing
-- Penetration testing
-- Vulnerability scanning
-- Authentication/authorization testing
-- Data encryption verification
-- PII detection testing
-
-### Quality Assurance
-- RAG retrieval quality
-- Response quality evaluation
-- Citation accuracy
-- Action execution accuracy
-- User acceptance testing (UAT)
+### Practical Skills
+- ✅ Working with local LLMs
+- ✅ Vector databases (ChromaDB)
+- ✅ Building chat interfaces (Streamlit)
+- ✅ Python best practices
 
 ---
 
-## 📈 Success Criteria
+## 💡 Extension Ideas (After Completing)
 
-### Technical
-- ✅ All core features implemented
-- ✅ Test coverage >80%
-- ✅ Performance KPIs met
-- ✅ Security audit passed
-- ✅ Documentation complete
+Once you finish the basic version, try:
 
-### Business
-- ✅ User satisfaction >4.5/5
-- ✅ Task completion rate >90%
-- ✅ Cost per query <$0.10
-- ✅ Reduction in support tickets by 40%
-- ✅ User adoption rate >60%
-
-### Compliance
-- ✅ GDPR compliant
-- ✅ PCI DSS compliant
-- ✅ SOC 2 Type II certified
-- ✅ Audit logs complete
-- ✅ Security controls in place
+1. **Add more document types**: Excel, images with OCR
+2. **Better intent classification**: Fine-tune a small classifier
+3. **Graph visualization**: Show transaction flows
+4. **Voice interface**: Add speech-to-text
+5. **Multi-user support**: Multiple dummy users
+6. **Comparison queries**: "Compare my spending this month vs last month"
+7. **Alerts**: "Notify me of transactions over $100"
+8. **Export features**: Export data to CSV
 
 ---
 
-## 💰 Cost Estimation (Monthly - Training/Demo Scale)
+## 🐛 Troubleshooting
 
-### Infrastructure
-- **Cloud Hosting:** $200-500 (AWS/GCP/Azure)
-- **Vector Database:** $100-300 (managed service)
-- **Database:** $50-150 (managed PostgreSQL)
-- **Redis Cache:** $30-100
-- **Storage:** $20-50 (documents & backups)
+### "Out of memory" when loading model
+- Use a smaller model (Phi-3-mini instead of Llama-3-8B)
+- Use Ollama (more memory efficient)
+- Reduce context window size
 
-### AI/ML Services
-- **Claude API:** $300-1000 (depends on usage)
-- **Embeddings:** $50-200 (OpenAI or self-hosted)
-- **OCR/Transcription:** $50-150
+### "Embeddings are slow"
+- Use smaller embedding model
+- Batch your documents
+- Enable GPU if available
 
-### Monitoring & Security
-- **Monitoring:** $50-100 (Datadog/New Relic)
-- **Security:** $100-200 (WAF, DDoS protection)
+### "ChromaDB errors"
+- Delete `./data/vector_db` and reinitialize
+- Check ChromaDB version compatibility
 
-**Total Estimated Cost:** $950-2,750/month for training scale
-
----
-
-## 🎓 Learning Outcomes
-
-By completing this project, you will gain expertise in:
-
-1. **RAG Systems:** Document processing, embeddings, vector databases, retrieval strategies
-2. **AI Agents:** LLM orchestration, intent classification, context management
-3. **MCP:** Tool integration, action execution, banking workflows
-4. **System Architecture:** Microservices, APIs, distributed systems
-5. **Security:** Authentication, encryption, PII handling, compliance
-6. **Full-Stack Development:** Backend APIs, databases, frontend interfaces
-7. **DevOps:** Docker, CI/CD, monitoring, deployment
-8. **Banking Domain:** Financial operations, regulations, security standards
+### "LLM gives bad answers"
+- Improve your prompts
+- Use more context from retrieval
+- Try different models
+- Add few-shot examples
 
 ---
 
-## 📚 Resources & References
+## 📚 Recommended Learning Path
 
-### Documentation
-- Anthropic Claude API: https://docs.anthropic.com
-- Model Context Protocol: https://modelcontextprotocol.io
-- LangChain: https://python.langchain.com
-- LlamaIndex: https://docs.llamaindex.ai
+### Before Starting
+1. **Python basics**: Functions, classes, file I/O
+2. **Basic ML concepts**: What are embeddings, what is a vector
 
-### Vector Databases
-- Pinecone: https://www.pinecone.io
-- Qdrant: https://qdrant.tech
-- Weaviate: https://weaviate.io
-- ChromaDB: https://www.trychroma.com
+### Week 1 Resources
+- [Sentence Transformers Intro](https://www.sbert.net/)
+- [ChromaDB Getting Started](https://docs.trychroma.com/)
+- [LangChain RAG Tutorial](https://python.langchain.com/docs/use_cases/question_answering/)
 
-### Banking APIs (for reference)
-- Plaid: https://plaid.com
-- Stripe: https://stripe.com
-- Open Banking: https://www.openbanking.org.uk
+### Week 2 Resources
+- JSON manipulation in Python
+- Pandas for data handling
 
-### Security & Compliance
-- GDPR: https://gdpr.eu
-- PCI DSS: https://www.pcisecuritystandards.org
-- OWASP: https://owasp.org
+### Week 3 Resources
+- [Prompt Engineering Guide](https://www.promptingguide.ai/)
+- [Building AI Agents](https://lilianweng.github.io/posts/2023-06-23-agent/)
 
----
-
-## 🤝 Contributing Guidelines
-
-(For when this becomes a collaborative project)
-
-1. Fork the repository
-2. Create a feature branch
-3. Write tests for new features
-4. Ensure all tests pass
-5. Update documentation
-6. Submit pull request
-7. Code review process
-8. Merge to main
+### Week 4 Resources
+- [Streamlit Tutorial](https://docs.streamlit.io/)
+- [Streamlit Chat Elements](https://docs.streamlit.io/library/api-reference/chat)
 
 ---
 
-## 📝 License
+## 🎓 What This Project Teaches (vs. Production)
 
-TBD (Suggest MIT or Apache 2.0 for training project)
+| Concept | This Project | Production Version |
+|---------|--------------|-------------------|
+| **LLM** | Local (free, private) | Cloud API (paid, scalable) |
+| **Vector DB** | ChromaDB (simple) | Pinecone/Weaviate (distributed) |
+| **Infrastructure** | Single machine | Microservices, K8s |
+| **Data** | JSON files | PostgreSQL, Redis |
+| **Auth** | None | JWT, OAuth, MFA |
+| **Monitoring** | Print statements | Prometheus, Grafana |
+| **Deployment** | Local only | Cloud (AWS/GCP/Azure) |
+
+**Both teach the same core concepts!** This version just removes the production complexity.
 
 ---
 
-## 🚀 Getting Started
+## 📊 Success Criteria
 
-See [QUICK_START.md](./QUICK_START.md) for setup instructions.
+You've succeeded when you can:
+- [ ] Upload a PDF and ask questions about it
+- [ ] Get accurate answers with source citations
+- [ ] Check your dummy account balance by asking
+- [ ] Transfer money between accounts
+- [ ] See transaction history
+- [ ] The AI understands follow-up questions
+- [ ] Everything runs on your laptop
+- [ ] You understand how each component works
 
 ---
 
-**Last Updated:** 2025-11-10
-**Version:** 1.0
-**Status:** Planning Phase
+## 🎉 Final Notes
+
+**This is a learning project!**
+
+- Don't worry about perfection
+- It's OK if the AI makes mistakes
+- Focus on understanding concepts
+- Experiment and break things
+- Have fun!
+
+The goal is to **learn RAG and AI agents**, not build a production banking system.
+
+When you're done, you'll have hands-on experience with:
+- Vector databases and semantic search
+- Local LLMs and prompt engineering
+- Building AI agents that can take actions
+- Document processing and retrieval
+- Chat interfaces
+
+**All skills that transfer to any AI project!**
+
+---
+
+## 📞 Getting Help
+
+Stuck? Try:
+1. Check the Streamlit logs (they're very helpful!)
+2. Print intermediate results (what did the retriever find?)
+3. Test components individually (does the LLM work alone?)
+4. Google the error message
+5. Ask on Discord/Reddit/StackOverflow
+
+**Remember**: Every bug is a learning opportunity!
+
+---
+
+**Ready to start? Let's build! 🚀**
+
+Estimated time: **4 weeks** (1-2 hours per day)
+Difficulty: **Beginner-Intermediate**
+Cost: **$0** (all open source!)
+Hardware needed: **8GB RAM recommended**
+
+Good luck and have fun learning! 🎓

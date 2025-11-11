@@ -1,422 +1,214 @@
-# BankSight-AI Quick Start Guide
+# Quick Start Guide (Simplified Version)
 
-Get your BankSight-AI development environment up and running in minutes!
+Get BankSight-AI running on your local machine in under 10 minutes!
+
+---
 
 ## Prerequisites
 
-### Required
-- **Python 3.11+** ([Download](https://www.python.org/downloads/))
-- **Docker & Docker Compose** ([Download](https://www.docker.com/products/docker-desktop/))
-- **Git** ([Download](https://git-scm.com/downloads))
-
-### API Keys
-- **Anthropic API Key** (Required) - Get from [Anthropic Console](https://console.anthropic.com/)
-- **OpenAI API Key** (Optional, for embeddings) - Get from [OpenAI Platform](https://platform.openai.com/)
-- **Pinecone API Key** (Optional, alternative to Qdrant) - Get from [Pinecone](https://www.pinecone.io/)
+- **Python 3.9+** (check with `python --version`)
+- **8GB RAM** recommended
+- **5GB free disk space** (for model)
 
 ---
 
-## Option 1: Docker Setup (Recommended)
+## Installation
 
-This is the fastest way to get started with all services.
+### Step 1: Install Ollama (Easiest LLM Option)
 
-### Step 1: Clone the Repository
-
+**Mac/Linux:**
 ```bash
-git clone https://github.com/yourusername/BankSight-AI.git
-cd BankSight-AI
+curl -fsSL https://ollama.ai/install.sh | sh
 ```
 
-### Step 2: Configure Environment
+**Windows:**
+Download from https://ollama.ai/download
 
+**Download a model:**
 ```bash
-# Copy the example environment file
-cp .env.example .env
-
-# Edit .env and add your API keys
-nano .env  # or use your preferred editor
+ollama pull mistral
+# This downloads ~4GB - takes 5-10 minutes
 ```
 
-**Required changes in `.env`:**
-```bash
-ANTHROPIC_API_KEY=your-anthropic-api-key-here
-SECRET_KEY=your-random-secret-key-here
-JWT_SECRET_KEY=your-random-jwt-secret-here
-```
-
-**Generate random keys:**
-```bash
-# On Linux/Mac:
-python -c "import secrets; print(secrets.token_urlsafe(32))"
-
-# On Windows PowerShell:
-python -c "import secrets; print(secrets.token_urlsafe(32))"
-```
-
-### Step 3: Start All Services
+### Step 2: Clone and Setup
 
 ```bash
-# Start all services in detached mode
-docker-compose -f docker/docker-compose.yml up -d
-
-# For development with live reload:
-docker-compose -f docker/docker-compose.yml -f docker/docker-compose.dev.yml up -d
-```
-
-### Step 4: Verify Services
-
-```bash
-# Check if all containers are running
-docker-compose -f docker/docker-compose.yml ps
-
-# Check API health
-curl http://localhost:8000/health
-```
-
-**Services will be available at:**
-- API Server: http://localhost:8000
-- API Documentation: http://localhost:8000/docs
-- Qdrant Dashboard: http://localhost:6333/dashboard
-- MinIO Console: http://localhost:9001 (credentials: minioadmin/minioadmin)
-- Prometheus: http://localhost:9090
-- Grafana: http://localhost:3001 (credentials: admin/admin)
-- PgAdmin (dev): http://localhost:5050 (admin@banksight.local/admin)
-- Mongo Express (dev): http://localhost:8081
-
-### Step 5: Test the API
-
-```bash
-# Interactive API documentation
-open http://localhost:8000/docs
-
-# Or test with curl
-curl -X POST http://localhost:8000/api/v1/chat \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Hello, BankSight!"}'
-```
-
----
-
-## Option 2: Local Python Setup
-
-For development without Docker.
-
-### Step 1: Clone and Setup Environment
-
-```bash
-git clone https://github.com/yourusername/BankSight-AI.git
+# Clone the repository
+git clone <your-repo-url>
 cd BankSight-AI
 
 # Create virtual environment
 python -m venv venv
 
-# Activate virtual environment
-# On Linux/Mac:
+# Activate it
+# On Mac/Linux:
 source venv/bin/activate
 # On Windows:
 venv\Scripts\activate
 
 # Install dependencies
-pip install -r requirements-dev.txt
-```
-
-### Step 2: Install External Dependencies
-
-#### On Ubuntu/Debian:
-```bash
-sudo apt-get update
-sudo apt-get install -y tesseract-ocr ffmpeg postgresql redis-server
-```
-
-#### On macOS:
-```bash
-brew install tesseract ffmpeg postgresql redis
-```
-
-#### On Windows:
-- Install [Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki)
-- Install [FFmpeg](https://ffmpeg.org/download.html)
-- Install [PostgreSQL](https://www.postgresql.org/download/windows/)
-- Install [Redis](https://redis.io/docs/install/install-redis/install-redis-on-windows/)
-
-### Step 3: Setup Databases
-
-#### PostgreSQL:
-```bash
-# Create database and user
-psql postgres
-CREATE DATABASE banksight_db;
-CREATE USER banksight WITH PASSWORD 'changeme';
-GRANT ALL PRIVILEGES ON DATABASE banksight_db TO banksight;
-\q
-```
-
-#### Qdrant (Vector Database):
-```bash
-# Run Qdrant in Docker
-docker run -p 6333:6333 -p 6334:6334 -v $(pwd)/qdrant_storage:/qdrant/storage qdrant/qdrant
-```
-
-### Step 4: Configure Environment
-
-```bash
-cp .env.example .env
-# Edit .env with your configuration
-```
-
-### Step 5: Run Database Migrations
-
-```bash
-# Run migrations (once implemented)
-alembic upgrade head
-```
-
-### Step 6: Start the API Server
-
-```bash
-# Development mode with auto-reload
-uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
-
-# Or use the run script
-python -m src.api.main
+pip install -r requirements-simple.txt
 ```
 
 ---
 
-## Initial Setup Tasks
-
-### 1. Create Vector Collection
+## Run the App
 
 ```bash
-# Using the API
-curl -X POST http://localhost:8000/api/v1/admin/init-vector-store
+streamlit run src/app.py
 ```
 
-### 2. Upload Sample Documents
-
-```bash
-# Upload a document
-curl -X POST http://localhost:8000/api/v1/documents/upload \
-  -F "file=@/path/to/your/document.pdf" \
-  -F "metadata={\"type\": \"policy\", \"category\": \"banking\"}"
-```
-
-### 3. Test RAG System
-
-```bash
-# Ask a question
-curl -X POST http://localhost:8000/api/v1/chat \
-  -H "Content-Type: application/json" \
-  -d '{
-    "message": "What are the account opening requirements?",
-    "session_id": "test-session-1"
-  }'
-```
-
-### 4. Test MCP Actions (Mock Mode)
-
-```bash
-# Check account balance
-curl -X POST http://localhost:8000/api/v1/chat \
-  -H "Content-Type: application/json" \
-  -d '{
-    "message": "What is my account balance?",
-    "session_id": "test-session-1"
-  }'
-```
+The app will open in your browser at `http://localhost:8501`
 
 ---
 
-## Development Workflow
+## First Steps
 
-### Running Tests
+### 1. Try a RAG Query
 
-```bash
-# Run all tests
-pytest
+The app comes with pre-loaded sample documents:
+- `data/documents/banking_policy.txt`
+- `data/documents/faq.txt`
 
-# Run with coverage
-pytest --cov=src --cov-report=html
+**Click "Process Documents"** in the sidebar (first time only)
 
-# Run specific test file
-pytest tests/unit/test_rag.py
+**Try asking:**
+- "What are the account opening requirements?"
+- "How much is the wire transfer fee?"
+- "What is the daily ATM withdrawal limit?"
 
-# Run with verbose output
-pytest -v
-```
+### 2. Try Banking Actions
 
-### Code Quality
+The app has dummy data already loaded.
 
-```bash
-# Format code with black
-black src tests
-
-# Sort imports
-isort src tests
-
-# Run linter
-flake8 src tests
-
-# Type checking
-mypy src
-```
-
-### Pre-commit Hooks
-
-```bash
-# Install pre-commit hooks
-pre-commit install
-
-# Run manually
-pre-commit run --all-files
-```
-
-### Database Migrations
-
-```bash
-# Create a new migration
-alembic revision --autogenerate -m "Description of changes"
-
-# Apply migrations
-alembic upgrade head
-
-# Rollback last migration
-alembic downgrade -1
-```
+**Try asking:**
+- "What is my account balance?"
+- "Show my last 5 transactions"
+- "Transfer $100 from checking to savings"
 
 ---
 
-## Common Commands
+## Project Structure
 
-### Docker
-
-```bash
-# View logs
-docker-compose -f docker/docker-compose.yml logs -f api
-
-# Restart a service
-docker-compose -f docker/docker-compose.yml restart api
-
-# Stop all services
-docker-compose -f docker/docker-compose.yml down
-
-# Stop and remove volumes (clean slate)
-docker-compose -f docker/docker-compose.yml down -v
-
-# Rebuild containers
-docker-compose -f docker/docker-compose.yml up -d --build
 ```
-
-### Database
-
-```bash
-# Connect to PostgreSQL
-docker exec -it banksight-postgres psql -U banksight -d banksight_db
-
-# Connect to MongoDB
-docker exec -it banksight-mongodb mongosh -u banksight -p changeme
-
-# Connect to Redis
-docker exec -it banksight-redis redis-cli
+BankSight-AI/
+├── src/
+│   ├── app.py                    # 👈 Main Streamlit app (START HERE)
+│   ├── rag/
+│   │   ├── document_loader.py    # Loads PDFs, TXT files
+│   │   ├── embeddings.py         # Creates embeddings
+│   │   ├── vector_store.py       # ChromaDB integration
+│   │   └── retriever.py          # Searches documents
+│   ├── agent/
+│   │   ├── llm.py                # Ollama integration
+│   │   ├── intent_classifier.py  # Understands user intent
+│   │   └── agent.py              # Routes queries
+│   └── actions/
+│       ├── banking_data.py       # Loads dummy data
+│       └── banking_actions.py    # Banking functions
+├── data/
+│   ├── documents/                # 👈 Put your PDFs here
+│   ├── banking_dummy_data.json   # 👈 Edit to add more data
+│   └── vector_db/                # (auto-created)
+├── config.yaml                   # 👈 Configuration
+└── requirements-simple.txt       # Dependencies
 ```
 
 ---
 
 ## Troubleshooting
 
-### Port Already in Use
+### "Ollama connection refused"
 
+Make sure Ollama is running:
 ```bash
-# Find process using port 8000
-lsof -i :8000  # On Mac/Linux
-netstat -ano | findstr :8000  # On Windows
-
-# Kill the process
-kill -9 <PID>  # On Mac/Linux
-taskkill /PID <PID> /F  # On Windows
+ollama serve
 ```
 
-### Docker Issues
+### "Out of memory" error
 
+Use a smaller model:
 ```bash
-# Clean up Docker
-docker system prune -a
-
-# Remove all stopped containers
-docker container prune
-
-# Remove all unused volumes
-docker volume prune
+ollama pull phi3  # 2.3GB instead of 4GB
 ```
 
-### Database Connection Issues
+Then update `config.yaml`:
+```yaml
+llm:
+  model: "phi3"
+```
 
-1. Verify services are running: `docker-compose ps`
-2. Check logs: `docker-compose logs <service-name>`
-3. Verify credentials in `.env` file
-4. Try restarting the service: `docker-compose restart <service-name>`
+### "ChromaDB error"
 
-### API Key Issues
+Delete the vector database and recreate:
+```bash
+rm -rf data/vector_db/
+```
 
-1. Verify API key is set in `.env`
-2. Check API key is valid on provider's console
-3. Restart the API service after changing `.env`
+Then click "Process Documents" again in the app.
+
+### App is slow
+
+- Use a smaller model (phi3 instead of mistral)
+- Reduce `chunk_size` in config.yaml
+- Reduce `top_k` in config.yaml
+
+---
+
+## What to Try
+
+### Upload Your Own Documents
+
+1. Click **"Upload Document"** in sidebar
+2. Choose a PDF or TXT file
+3. Click **"Process Documents"**
+4. Ask questions about it!
+
+### Modify Dummy Data
+
+Edit `data/banking_dummy_data.json`:
+- Add more accounts
+- Add more transactions
+- Change balances
+
+Restart the app to see changes.
+
+### Experiment with Prompts
+
+Edit the prompts in:
+- `src/agent/llm.py` - System prompts
+- `src/agent/intent_classifier.py` - Classification prompts
+- `src/agent/agent.py` - Response generation
 
 ---
 
 ## Next Steps
 
-Now that you have BankSight-AI running:
-
-1. **Explore the API** - Visit http://localhost:8000/docs for interactive documentation
-2. **Read the Architecture** - Check [ARCHITECTURE.md](./ARCHITECTURE.md) to understand the system
-3. **Follow the Roadmap** - See [PROJECT_PLAN.md](./PROJECT_PLAN.md) for implementation phases
-4. **Start Development** - Pick a feature from Phase 1 and start coding!
-
----
-
-## Learning Resources
-
-### RAG Systems
-- [LangChain Documentation](https://python.langchain.com/)
-- [Anthropic Claude Guide](https://docs.anthropic.com/)
-- [Vector Database Comparison](https://www.pinecone.io/learn/vector-database/)
-
-### MCP (Model Context Protocol)
-- [MCP Specification](https://modelcontextprotocol.io/)
-- [Building MCP Servers](https://modelcontextprotocol.io/docs/concepts/servers)
-
-### Banking APIs
-- [Plaid Documentation](https://plaid.com/docs/)
-- [Open Banking Standards](https://www.openbanking.org.uk/)
+1. **Read the code** - Start with `src/app.py`
+2. **Follow the tutorial** - See PROJECT_PLAN_SIMPLIFIED.md
+3. **Week 1**: Understand how RAG works
+4. **Week 2**: Understand how actions work
+5. **Week 3**: Build the agent
+6. **Week 4**: Polish the UI
 
 ---
 
-## Getting Help
+## Common Questions
 
-- **Documentation:** Check the `docs/` folder
-- **Issues:** Create an issue on GitHub
-- **Discussions:** Join project discussions
+**Q: Do I need internet?**
+A: Only for initial setup. After downloading the model, you can run offline!
+
+**Q: Can I use ChatGPT instead?**
+A: Yes, but it costs money. This version is 100% free and private.
+
+**Q: How accurate is the AI?**
+A: Smaller models (7B parameters) are good for learning but make mistakes. That's OK!
+
+**Q: Can I deploy this?**
+A: This version is for local learning only. See PROJECT_PLAN.md for production version.
 
 ---
 
-## Quick Reference Card
+**Have fun learning!** 🚀
 
-```bash
-# Start everything
-docker-compose -f docker/docker-compose.yml up -d
-
-# View API logs
-docker-compose -f docker/docker-compose.yml logs -f api
-
-# Run tests
-pytest
-
-# Format code
-black src tests && isort src tests
-
-# Stop everything
-docker-compose -f docker/docker-compose.yml down
-```
-
-Happy coding! 🚀
+For detailed implementation guide, see: `IMPLEMENTATION_ROADMAP_SIMPLE.md`
