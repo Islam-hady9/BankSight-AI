@@ -1,40 +1,40 @@
 # Backend - FastAPI
-fastapi==0.109.0
-uvicorn[standard]==0.27.0
-pydantic==2.5.3
-pydantic-settings==2.1.0
-python-multipart==0.0.6
+fastapi
+uvicorn[standard]
+pydantic>=2.0  # v2.x required (breaking changes from v1.x)
+pydantic-settings
+python-multipart
 
 # LLM - HuggingFace
-transformers==4.37.0
-torch==2.1.2
-accelerate==0.26.0
-sentencepiece==0.1.99
-protobuf==4.25.2
+transformers>=4.35  # Need 4.35+ for Phi-3 support
+torch>=2.0  # PyTorch 2.x required for modern models
+accelerate
+sentencepiece
+protobuf
 
 # Frontend - Streamlit
-streamlit==1.31.0
+streamlit
 
 # RAG - Vector Database & Embeddings
-chromadb==0.4.22
-sentence-transformers==2.3.1
+chromadb>=0.4  # v0.4+ has improved API
+sentence-transformers
 
 # Document Processing
-pypdf2==3.0.1
-pdfplumber==0.10.3
-python-docx==1.1.0
-pandas==2.2.0
+pypdf2
+pdfplumber
+python-docx
+pandas
 
 # Utilities
-pyyaml==6.0.1
-python-dotenv==1.0.0
-requests==2.31.0
-httpx==0.26.0
-aiofiles==23.2.1
+pyyaml
+python-dotenv
+requests
+httpx
+aiofiles
 
-# Development
-jupyter==1.0.0
-ipykernel==6.29.0
-pytest==8.0.0
-pytest-asyncio==0.23.4
-black==24.1.1
+# Development (Optional)
+jupyter
+ipykernel
+pytest
+pytest-asyncio
+black
