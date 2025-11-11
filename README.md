@@ -292,30 +292,61 @@ python -m pytest tests/
 
 ## 🐛 Troubleshooting
 
-### Backend won't start
+### ⚡ GPU Setup (CRITICAL for Performance)
+
+**If you have an NVIDIA GPU, you MUST install PyTorch with CUDA support!**
+
+```bash
+# Check if GPU is detected
+python -c "import torch; print('CUDA:', torch.cuda.is_available())"
+
+# If False, reinstall PyTorch with CUDA
+pip uninstall torch torchvision torchaudio -y
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# Verify
+python -c "import torch; print('GPU:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'None')"
+```
+
+**Performance difference:**
+- ✅ With GPU: 3-5 seconds per query
+- ❌ Without GPU: 30-60 seconds per query
+
+### Common Issues
+
+**Backend won't start:**
 ```bash
 # Check if port 8000 is in use
 lsof -i :8000  # Mac/Linux
 netstat -ano | findstr :8000  # Windows
-
-# Try different port
-uvicorn backend.main:app --port 8001
 ```
 
-### Out of memory
-- Use Phi-3-mini instead of Mistral/Llama
-- Set `load_in_8bit: true` in config.yaml
-- Close other applications
+**Out of memory:**
+- Use smaller model: `microsoft/Phi-3-mini-4k-instruct`
+- Enable 8-bit: `load_in_8bit: true` in config.yaml
+- Install: `pip install bitsandbytes`
 
-### Slow inference
-- First generation is always slow (model loading)
-- Use GPU if available
-- Reduce `max_new_tokens` in config
+**Slow inference:**
+- First query is always slow (10-30s) - model loading
+- Check GPU is enabled (see above)
+- Use smaller model or reduce `max_new_tokens`
 
-### Documents not found
+**Documents not processing:**
 - Click "Process All Documents" in sidebar
-- Check `data/documents/` directory exists
-- Verify file formats (PDF, TXT, DOCX supported)
+- Check files are in `data/documents/`
+- Only PDF, TXT, DOCX, CSV supported
+
+### 📖 Complete Troubleshooting Guide
+
+For detailed solutions to all issues, see **[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)**
+
+Covers:
+- GPU/CUDA setup (Windows, Linux, Mac)
+- Model download issues
+- Memory problems
+- Performance optimization
+- RAG configuration
+- And more!
 
 ---
 
@@ -409,9 +440,11 @@ MIT License - Free to use, modify, and learn from!
 
 ## 📞 Questions?
 
-- Check [QUICK_START.md](QUICK_START.md) for detailed setup
-- See [ARCHITECTURE.md](ARCHITECTURE.md) for system design
-- See [PROJECT_PLAN.md](PROJECT_PLAN.md) for learning roadmap
+- **Setup Issues?** → [QUICK_START.md](QUICK_START.md) - Detailed installation guide
+- **GPU Problems?** → [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Complete troubleshooting guide
+- **Architecture?** → [ARCHITECTURE.md](ARCHITECTURE.md) - System design details
+- **Learning Path?** → [PROJECT_PLAN.md](PROJECT_PLAN.md) - 4-week roadmap
+- **Model Selection?** → [docs/MODEL_GUIDE.md](docs/MODEL_GUIDE.md) - Choose the right LLM
 
 ---
 

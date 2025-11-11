@@ -61,24 +61,120 @@ pip install -r requirements.txt
 
 **Note:** First install takes 5-10 minutes. Grab a coffee! ☕
 
-### Step 4: (Optional) GPU Acceleration
+### Step 4: GPU Acceleration Setup ⚡ (IMPORTANT for Performance)
 
-If you have an NVIDIA GPU:
+**Why GPU matters:** With GPU, queries take **3-5 seconds**. Without GPU, they take **30-60 seconds**.
+
+#### 4.1: Verify Your GPU
+
+First, check if your NVIDIA GPU is detected by the system:
 
 ```bash
-# Verify GPU is detected
-python -c "import torch; print(torch.cuda.is_available())"
-# Should print: True
-
-# Check GPU name
-python -c "import torch; print(torch.cuda.get_device_name(0))"
-# Should show your GPU (e.g., "NVIDIA GeForce RTX 4060 Ti")
+# Check NVIDIA driver and GPU
+nvidia-smi
 ```
 
-If False, you might need to reinstall PyTorch with CUDA:
+**Expected output:**
+```
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 576.80                 Driver Version: 576.80         CUDA Version: 12.9     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                  Driver-Model | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+|   0  NVIDIA GeForce RTX 4060 Ti   WDDM  |   00000000:01:00.0  On |                  N/A |
++-----------------------------------------------------------------------------------------+
+```
+
+✅ **If you see your GPU listed:** Great! Continue to step 4.2.
+
+❌ **If command not found:** You need to install [NVIDIA drivers](https://www.nvidia.com/Download/index.aspx) first.
+
+#### 4.2: Verify PyTorch GPU Support
+
+Check if PyTorch can access your GPU:
+
 ```bash
-pip install torch --index-url https://download.pytorch.org/whl/cu121
+python -c "import torch; print('PyTorch version:', torch.__version__); print('CUDA available:', torch.cuda.is_available())"
 ```
+
+**✅ GOOD - GPU Detected:**
+```
+PyTorch version: 2.9.0+cu121
+CUDA available: True
+```
+
+**❌ PROBLEM - CPU-Only Version:**
+```
+PyTorch version: 2.9.0+cpu
+CUDA available: False
+```
+
+If you see `+cpu` or `CUDA available: False`, continue to step 4.3.
+
+#### 4.3: Install PyTorch with CUDA Support (Windows)
+
+**⚠️ Common Issue:** If you installed dependencies with `pip install -r requirements.txt`, you likely got the **CPU-only version** of PyTorch by default.
+
+**Fix: Reinstall PyTorch with CUDA support**
+
+```powershell
+# 1. Uninstall CPU-only version
+pip uninstall torch torchvision torchaudio -y
+
+# 2. Install CUDA-enabled PyTorch (for CUDA 12.x)
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# 3. Verify GPU is now detected
+python -c "import torch; print('CUDA available:', torch.cuda.is_available()); print('GPU:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'None')"
+```
+
+**Expected output after reinstall:**
+```
+CUDA available: True
+GPU: NVIDIA GeForce RTX 4060 Ti
+```
+
+#### 4.4: Choose the Right CUDA Version
+
+Your NVIDIA driver supports multiple CUDA versions. Check your driver's CUDA version:
+
+```bash
+nvidia-smi
+# Look for "CUDA Version: X.X" in the output
+```
+
+Then install matching PyTorch:
+
+| Driver CUDA Version | PyTorch Installation |
+|---------------------|----------------------|
+| **CUDA 12.x** (12.1-12.9) | `pip install torch --index-url https://download.pytorch.org/whl/cu121` |
+| **CUDA 11.8** | `pip install torch --index-url https://download.pytorch.org/whl/cu118` |
+| **CUDA 12.4+** | `pip install torch --index-url https://download.pytorch.org/whl/cu124` |
+
+**Note:** CUDA 12.1 PyTorch works with all CUDA 12.x drivers (backward compatible).
+
+#### 4.5: Final Verification
+
+Run this comprehensive check:
+
+```bash
+python -c "import torch; print('='*50); print('PyTorch Version:', torch.__version__); print('CUDA Available:', torch.cuda.is_available()); print('CUDA Version:', torch.version.cuda); print('GPU Count:', torch.cuda.device_count()); print('GPU Name:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'None'); print('GPU VRAM:', round(torch.cuda.get_device_properties(0).total_memory/1024**3, 1), 'GB' if torch.cuda.is_available() else ''); print('='*50)"
+```
+
+**Perfect output example:**
+```
+==================================================
+PyTorch Version: 2.9.0+cu121
+CUDA Available: True
+CUDA Version: 12.1
+GPU Count: 1
+GPU Name: NVIDIA GeForce RTX 4060 Ti
+GPU VRAM: 16.0 GB
+==================================================
+```
+
+✅ **If all checks pass:** You're ready to run the app with GPU acceleration!
+
+❌ **If still showing False:** See troubleshooting section below for advanced solutions.
 
 ---
 
@@ -278,6 +374,44 @@ Then: `pip install bitsandbytes`
 ---
 
 ## 🐛 Troubleshooting
+
+### GPU/CUDA Issues ⚡
+
+**Problem: `torch.cuda.is_available()` returns False**
+
+**Cause 1: CPU-only PyTorch installed**
+```powershell
+# Check PyTorch version
+python -c "import torch; print(torch.__version__)"
+# If shows "2.x.x+cpu", you have CPU-only version
+```
+
+**Solution:**
+```powershell
+pip uninstall torch torchvision torchaudio -y
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+```
+
+**Cause 2: NVIDIA drivers not installed or outdated**
+```bash
+# Check if nvidia-smi works
+nvidia-smi
+```
+
+**Solution:** Download and install latest drivers from [NVIDIA's website](https://www.nvidia.com/Download/index.aspx)
+
+**Cause 3: CUDA version mismatch**
+
+Check your driver's CUDA version with `nvidia-smi`, then install matching PyTorch:
+- CUDA 12.x → Use `cu121`
+- CUDA 11.8 → Use `cu118`
+
+**Verification after fix:**
+```bash
+python -c "import torch; print('CUDA:', torch.cuda.is_available()); print('GPU:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'None')"
+```
+
+---
 
 ### Backend Won't Start
 
