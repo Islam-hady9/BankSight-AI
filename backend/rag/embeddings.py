@@ -22,8 +22,13 @@ class EmbeddingModel:
             return
 
         logger.info(f"Loading embedding model: {self.model_name}")
-        self.model = SentenceTransformer(self.model_name)
-        logger.info("Embedding model loaded")
+
+        # Load model with GPU support if available
+        import torch
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+
+        self.model = SentenceTransformer(self.model_name, device=device)
+        logger.info(f"Embedding model loaded on device: {device}")
 
     def encode(self, texts: List[str]) -> np.ndarray:
         """

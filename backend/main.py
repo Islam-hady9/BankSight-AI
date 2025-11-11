@@ -183,16 +183,22 @@ async def process_all_documents():
         for file_path in upload_dir.iterdir():
             if file_path.is_file() and file_path.suffix[1:] in config.documents_supported_formats:
                 try:
+                    logger.info(f"Processing document: {file_path.name}")
                     doc = load_document(str(file_path))
+                    logger.info(f"Loaded {len(doc['text'])} characters from {file_path.name}")
+
                     chunks = chunk_document(doc["text"], doc["metadata"])
+                    logger.info(f"Created {len(chunks)} chunks from {file_path.name}")
+
                     vector_store.add_documents(chunks)
+                    logger.info(f"Added chunks to vector store for {file_path.name}")
 
                     processed += 1
                     total_chunks += len(chunks)
-                    logger.info(f"Processed: {file_path.name}")
+                    logger.info(f"✅ Successfully processed: {file_path.name}")
 
                 except Exception as e:
-                    logger.error(f"Failed to process {file_path.name}: {e}")
+                    logger.error(f"❌ Failed to process {file_path.name}: {str(e)}", exc_info=True)
 
         return {
             "success": True,
