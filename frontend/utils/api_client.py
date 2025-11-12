@@ -9,7 +9,7 @@ from pathlib import Path
 
 # Load config
 config_path = Path(__file__).parent.parent.parent / "config.yaml"
-with open(config_path, "r") as f:
+with open(config_path, "r", encoding="utf-8") as f:
     config = yaml.safe_load(f)
 
 BACKEND_URL = config["frontend"]["backend_url"]
