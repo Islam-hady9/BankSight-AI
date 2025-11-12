@@ -58,7 +58,7 @@ llm:
 embeddings:
   model_name: "sentence-transformers/all-MiniLM-L6-v2"
   dimension: 384
-  device: "cpu"  # Embeddings don't need GPU
+  device: "cuda"  # Use GPU for fast embedding generation (falls back to CPU if no GPU)
 
 # Vector Store Settings
 vector_store:

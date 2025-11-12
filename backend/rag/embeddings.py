@@ -22,13 +22,16 @@ class EmbeddingModel:
             return
 
         logger.info(f"Loading embedding model: {self.model_name}")
+        logger.info("This may take a few minutes on first run (downloading model)...")
 
         # Load model with GPU support if available
         import torch
         device = "cuda" if torch.cuda.is_available() else "cpu"
+        logger.info(f"Device available: {device}")
 
+        logger.info("Downloading/loading model from HuggingFace...")
         self.model = SentenceTransformer(self.model_name, device=device)
-        logger.info(f"Embedding model loaded on device: {device}")
+        logger.info(f"✅ Embedding model loaded successfully on device: {device}")
 
     def encode(self, texts: List[str]) -> np.ndarray:
         """
@@ -41,10 +44,15 @@ class EmbeddingModel:
             Numpy array of embeddings
         """
         if self.model is None:
+            logger.info("Embedding model not loaded, loading now...")
             self.load_model()
 
-        logger.info(f"Encoding {len(texts)} texts")
-        embeddings = self.model.encode(texts, show_progress_bar=len(texts) > 10)
+        logger.info(f"🔄 Encoding {len(texts)} text chunks into embeddings...")
+        logger.info(f"Total characters to process: {sum(len(t) for t in texts)}")
+
+        embeddings = self.model.encode(texts, show_progress_bar=True)
+
+        logger.info(f"✅ Successfully encoded {len(texts)} chunks")
         return embeddings
 
     def encode_single(self, text: str) -> np.ndarray:

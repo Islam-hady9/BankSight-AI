@@ -187,11 +187,13 @@ async def process_all_documents():
                     doc = load_document(str(file_path))
                     logger.info(f"Loaded {len(doc['text'])} characters from {file_path.name}")
 
+                    logger.info(f"Chunking document: {file_path.name}")
                     chunks = chunk_document(doc["text"], doc["metadata"])
                     logger.info(f"Created {len(chunks)} chunks from {file_path.name}")
 
+                    logger.info(f"Adding chunks to vector store for {file_path.name}")
                     vector_store.add_documents(chunks)
-                    logger.info(f"Added chunks to vector store for {file_path.name}")
+                    logger.info(f"✅ Added chunks to vector store for {file_path.name}")
 
                     processed += 1
                     total_chunks += len(chunks)
