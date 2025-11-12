@@ -26,7 +26,7 @@ async def retrieve_and_generate(query: str, top_k: int = None) -> Dict:
 
     if not documents:
         return {
-            "answer": "I don't have any relevant documents to answer this question.",
+            "answer": "I don't have any relevant documents to answer this question. / ليس لدي أي مستندات ذات صلة للإجابة على هذا السؤال.",
             "sources": []
         }
 
