@@ -15,9 +15,10 @@ A **learning project** combining modern AI technologies with **ultra-fast cloud 
 
 ✅ **FastAPI Backend** - Professional REST API architecture
 ✅ **Groq API** - Lightning-fast cloud LLM inference (10-20x faster!)
+✅ **LangChain Agent** - Tool-calling agent with conversation memory 🆕
 ✅ **Streamlit Frontend** - Beautiful, interactive chat UI
 ✅ **RAG System** - Ask questions about uploaded documents
-✅ **AI Agent** - Perform banking actions via natural language
+✅ **Banking Tools** - Balance checks, transfers, transaction search
 ✅ **Bilingual** - Supports English and Arabic seamlessly
 ✅ **CPU-Only** - No GPU/CUDA required, runs anywhere
 
@@ -418,7 +419,9 @@ Completing this project teaches:
 - [x] Bilingual support (English/Arabic)
 - [x] Banking actions on dummy data
 - [x] Intent classification
-- [ ] Conversation memory/history
+- [x] **Conversation memory with LangChain agent** 🆕
+- [x] Tool-calling agent with intelligent action execution
+- [ ] RAG integration as LangChain tool
 - [ ] More file types (Excel, images)
 - [ ] Response streaming from Groq
 - [ ] Multi-model support (other Groq models)
@@ -457,6 +460,7 @@ MIT License - Free to use, modify, and learn from!
 ## 📞 Questions?
 
 - **Setup Issues?** → [QUICK_START.md](QUICK_START.md) - Detailed installation guide
+- **LangChain Agent?** → [docs/LANGCHAIN_AGENT.md](docs/LANGCHAIN_AGENT.md) - Conversation memory & tool calling 🆕
 - **Architecture?** → [ARCHITECTURE.md](ARCHITECTURE.md) - System design details
 - **Learning Path?** → [PROJECT_PLAN.md](PROJECT_PLAN.md) - 4-week roadmap
 - **Groq API Help?** → [Groq Documentation](https://console.groq.com/docs) - Official API docs

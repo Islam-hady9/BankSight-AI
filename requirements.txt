@@ -7,6 +7,9 @@ python-multipart
 
 # LLM - Groq API (Cloud Inference - CPU Only)
 groq  # Fast cloud inference via Groq API
+langchain>=0.1.0
+langchain-groq
+langchain-community
 
 # RAG - Vector Database & Embeddings (CPU-compatible)
 chromadb>=0.4  # v0.4+ has improved API
