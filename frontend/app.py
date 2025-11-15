@@ -119,16 +119,26 @@ with st.sidebar:
     st.divider()
     st.subheader("💡 Example Queries")
     st.markdown("""
-    **Questions:**
+    **📄 Document Q&A:**
     - What are the account opening requirements?
     - What are the wire transfer fees?
-    - What is the overdraft policy?
+    - Explain the overdraft policy
 
-    **Actions:**
+    **💳 Banking Actions:**
     - What is my checking account balance?
     - Show my last 5 transactions
     - Transfer $100 from checking to savings
     - Search for grocery transactions
+
+    **📊 Financial Advisor:**
+    - Analyze financial health for customer customer_001
+    - What savings plans do you recommend for customer_003?
+    - Am I eligible for a home loan? Check customer_001
+    - Recommend loans for customer customer_005
+
+    **💬 General:**
+    - مرحباً! كيف يمكنك مساعدتي؟ (Arabic support)
+    - What can you help me with?
     """)
 
 # Main chat interface
