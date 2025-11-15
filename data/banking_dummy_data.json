@@ -1,0 +1,219 @@
+{
+  "users": [
+    {
+      "id": "user_001",
+      "name": "Demo User",
+      "email": "demo@banksight.ai",
+      "phone": "+1-555-0123",
+      "created_date": "2024-01-01"
+    }
+  ],
+  "accounts": [
+    {
+      "id": "acc_checking_001",
+      "user_id": "user_001",
+      "type": "checking",
+      "account_number": "****1234",
+      "balance": 5430.50,
+      "currency": "USD",
+      "status": "active",
+      "opened_date": "2024-01-01"
+    },
+    {
+      "id": "acc_savings_001",
+      "user_id": "user_001",
+      "type": "savings",
+      "account_number": "****5678",
+      "balance": 12500.00,
+      "currency": "USD",
+      "status": "active",
+      "opened_date": "2024-01-01"
+    },
+    {
+      "id": "acc_credit_001",
+      "user_id": "user_001",
+      "type": "credit_card",
+      "account_number": "****9012",
+      "balance": -1250.75,
+      "currency": "USD",
+      "credit_limit": 5000.00,
+      "status": "active",
+      "opened_date": "2024-02-01"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "txn_001",
+      "account_id": "acc_checking_001",
+      "date": "2025-01-14",
+      "amount": -150.00,
+      "merchant": "Whole Foods",
+      "category": "groceries",
+      "description": "Grocery shopping",
+      "status": "completed"
+    },
+    {
+      "id": "txn_002",
+      "account_id": "acc_checking_001",
+      "date": "2025-01-13",
+      "amount": -45.00,
+      "merchant": "Starbucks",
+      "category": "dining",
+      "description": "Coffee",
+      "status": "completed"
+    },
+    {
+      "id": "txn_003",
+      "account_id": "acc_checking_001",
+      "date": "2025-01-12",
+      "amount": 2500.00,
+      "merchant": "Salary Deposit",
+      "category": "income",
+      "description": "Monthly salary",
+      "status": "completed"
+    },
+    {
+      "id": "txn_004",
+      "account_id": "acc_checking_001",
+      "date": "2025-01-11",
+      "amount": -89.99,
+      "merchant": "Amazon",
+      "category": "shopping",
+      "description": "Online purchase",
+      "status": "completed"
+    },
+    {
+      "id": "txn_005",
+      "account_id": "acc_checking_001",
+      "date": "2025-01-10",
+      "amount": -62.50,
+      "merchant": "Trader Joe's",
+      "category": "groceries",
+      "description": "Grocery shopping",
+      "status": "completed"
+    },
+    {
+      "id": "txn_006",
+      "account_id": "acc_checking_001",
+      "date": "2025-01-09",
+      "amount": -120.00,
+      "merchant": "Gas Station",
+      "category": "transportation",
+      "description": "Fuel",
+      "status": "completed"
+    },
+    {
+      "id": "txn_007",
+      "account_id": "acc_checking_001",
+      "date": "2025-01-08",
+      "amount": -35.00,
+      "merchant": "Netflix",
+      "category": "entertainment",
+      "description": "Monthly subscription",
+      "status": "completed"
+    },
+    {
+      "id": "txn_008",
+      "account_id": "acc_checking_001",
+      "date": "2025-01-07",
+      "amount": -55.00,
+      "merchant": "Safeway",
+      "category": "groceries",
+      "description": "Grocery shopping",
+      "status": "completed"
+    },
+    {
+      "id": "txn_009",
+      "account_id": "acc_checking_001",
+      "date": "2025-01-06",
+      "amount": -75.00,
+      "merchant": "Restaurant",
+      "category": "dining",
+      "description": "Dinner",
+      "status": "completed"
+    },
+    {
+      "id": "txn_010",
+      "account_id": "acc_checking_001",
+      "date": "2025-01-05",
+      "amount": -200.00,
+      "merchant": "Electric Company",
+      "category": "utilities",
+      "description": "Electric bill",
+      "status": "completed"
+    },
+    {
+      "id": "txn_011",
+      "account_id": "acc_savings_001",
+      "date": "2025-01-01",
+      "amount": 500.00,
+      "merchant": "Transfer from Checking",
+      "category": "transfer",
+      "description": "Monthly savings",
+      "status": "completed"
+    },
+    {
+      "id": "txn_012",
+      "account_id": "acc_savings_001",
+      "date": "2024-12-01",
+      "amount": 500.00,
+      "merchant": "Transfer from Checking",
+      "category": "transfer",
+      "description": "Monthly savings",
+      "status": "completed"
+    },
+    {
+      "id": "txn_013",
+      "account_id": "acc_credit_001",
+      "date": "2025-01-13",
+      "amount": -250.00,
+      "merchant": "Best Buy",
+      "category": "electronics",
+      "description": "Electronics purchase",
+      "status": "completed"
+    },
+    {
+      "id": "txn_014",
+      "account_id": "acc_credit_001",
+      "date": "2025-01-10",
+      "amount": -89.50,
+      "merchant": "Target",
+      "category": "shopping",
+      "description": "General shopping",
+      "status": "completed"
+    },
+    {
+      "id": "txn_015",
+      "account_id": "acc_credit_001",
+      "date": "2025-01-08",
+      "amount": 200.00,
+      "merchant": "Payment Received",
+      "category": "payment",
+      "description": "Credit card payment",
+      "status": "completed"
+    }
+  ],
+  "payees": [
+    {
+      "id": "payee_001",
+      "user_id": "user_001",
+      "name": "Electric Company",
+      "account_number": "ELEC-12345",
+      "type": "utility"
+    },
+    {
+      "id": "payee_002",
+      "user_id": "user_001",
+      "name": "Landlord",
+      "account_number": "RENT-98765",
+      "type": "rent"
+    },
+    {
+      "id": "payee_003",
+      "user_id": "user_001",
+      "name": "Credit Card",
+      "account_number": "****9012",
+      "type": "credit_card"
+    }
+  ]
+}
