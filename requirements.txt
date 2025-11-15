@@ -5,7 +5,7 @@ pydantic>=2.0  # v2.x required (breaking changes from v1.x)
 pydantic-settings
 python-multipart
 
-# LLM - Groq API (Cloud Inference)
+# LLM - Groq API (Cloud Inference - CPU Only)
 groq  # Fast cloud inference via Groq API
 
 # RAG - Vector Database & Embeddings (CPU-compatible)
@@ -34,18 +34,3 @@ ipykernel
 pytest
 pytest-asyncio
 black
-
-# ==========================================
-# OPTIONAL: Local Model Support (HuggingFace)
-# ==========================================
-# Uncomment the lines below ONLY if you want to use local models as fallback
-# This requires significantly more resources and is not needed for Groq API
-
-# transformers>=4.38.0
-# torch>=2.0
-# accelerate
-# sentencepiece
-# protobuf
-
-# For 8-bit/4-bit quantization (GPU only):
-# bitsandbytes

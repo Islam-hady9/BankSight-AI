@@ -19,8 +19,9 @@ llm:
   # ==========================================
   # LLM PROVIDER SELECTION
   # ==========================================
-  # Options: "groq" (fast cloud API) or "huggingface" (local GPU inference)
-  provider: "groq"  # Change to "huggingface" for local inference
+  # Using Groq API for fast cloud inference (CPU-only, no GPU needed)
+  # Requires GROQ_API_KEY in .env file
+  provider: "groq"
 
   # ==========================================
   # GROQ API SETTINGS (Fast Cloud Inference)
