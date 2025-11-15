@@ -3,8 +3,9 @@ RAG retrieval and generation pipeline.
 """
 from typing import Dict, List
 from .vector_store import vector_store
-from ..llm.huggingface_client import llm_client
-from ..llm.prompts import RAG_ANSWER_PROMPT
+from ..llm.client import llm_client
+from ..llm.prompts import RAG_ANSWER_PROMPT, create_rag_messages
+from ..config import config
 from ..utils.logger import logger
 
 
@@ -39,9 +40,15 @@ async def retrieve_and_generate(query: str, top_k: int = None) -> Dict:
     context = "\n\n".join(context_parts)
 
     # 3. Generate answer using LLM
-    prompt = RAG_ANSWER_PROMPT.format(context=context, question=query)
-
-    answer = llm_client.generate(prompt)
+    # Check if using Groq (supports chat messages) or HuggingFace (needs prompt string)
+    if config.llm_provider == "groq" and hasattr(llm_client, 'generate_from_messages'):
+        # Use chat messages format for Groq
+        messages = create_rag_messages(context, query)
+        answer = llm_client.generate_from_messages(messages)
+    else:
+        # Use prompt string for HuggingFace
+        prompt = RAG_ANSWER_PROMPT.format(context=context, question=query)
+        answer = llm_client.generate(prompt)
 
     # 4. Extract sources
     sources = [

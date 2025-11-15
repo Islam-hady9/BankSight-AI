@@ -13,11 +13,11 @@ class HuggingFaceLLM:
     """HuggingFace model wrapper for text generation."""
 
     def __init__(self):
-        self.model_name = config.llm_model_name
-        self.max_new_tokens = config.llm_max_new_tokens
-        self.temperature = config.llm_temperature
-        self.device = config.llm_device
-        self.cache_dir = config.llm_cache_dir
+        self.model_name = config.llm_hf_model_name
+        self.max_new_tokens = config.llm_hf_max_new_tokens
+        self.temperature = config.llm_hf_temperature
+        self.device = config.llm_hf_device
+        self.cache_dir = config.llm_hf_cache_dir
 
         self.model = None
         self.tokenizer = None

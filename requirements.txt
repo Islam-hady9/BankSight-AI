@@ -5,12 +5,13 @@ pydantic>=2.0  # v2.x required (breaking changes from v1.x)
 pydantic-settings
 python-multipart
 
-# LLM - HuggingFace
+# LLM - HuggingFace & Groq
 transformers>=4.38.0  # Need 4.38+ for DynamicCache.seen_tokens (fixes generation errors)
 torch>=2.0  # PyTorch 2.x required for modern models
 accelerate
 sentencepiece
 protobuf
+groq  # Groq API for fast cloud inference
 
 # Quantization (Optional - for 8-bit/4-bit model loading)
 # Uncomment if using load_in_8bit or load_in_4bit in config.yaml

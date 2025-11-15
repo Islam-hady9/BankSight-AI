@@ -39,25 +39,82 @@ class Config(BaseSettings):
     def backend_reload(self) -> bool:
         return self._config_data.get("backend", {}).get("reload", True)
 
+    # LLM Provider Selection
+    @property
+    def llm_provider(self) -> str:
+        return self._config_data.get("llm", {}).get("provider", "groq")
+
+    # Groq Settings
+    @property
+    def llm_groq_model_name(self) -> str:
+        return self._config_data.get("llm", {}).get("groq", {}).get("model_name", "moonshotai/kimi-k2-instruct-0905")
+
+    @property
+    def llm_groq_max_tokens(self) -> int:
+        return self._config_data.get("llm", {}).get("groq", {}).get("max_tokens", 4096)
+
+    @property
+    def llm_groq_temperature(self) -> float:
+        return self._config_data.get("llm", {}).get("groq", {}).get("temperature", 0.6)
+
+    @property
+    def llm_groq_top_p(self) -> float:
+        return self._config_data.get("llm", {}).get("groq", {}).get("top_p", 1.0)
+
+    @property
+    def llm_groq_stream(self) -> bool:
+        return self._config_data.get("llm", {}).get("groq", {}).get("stream", False)
+
+    @property
+    def llm_groq_timeout(self) -> int:
+        return self._config_data.get("llm", {}).get("groq", {}).get("timeout", 30)
+
+    # HuggingFace Settings (for fallback/local inference)
+    @property
+    def llm_hf_model_name(self) -> str:
+        return self._config_data.get("llm", {}).get("huggingface", {}).get("model_name", "microsoft/Phi-3-mini-4k-instruct")
+
+    @property
+    def llm_hf_max_new_tokens(self) -> int:
+        return self._config_data.get("llm", {}).get("huggingface", {}).get("max_new_tokens", 1000)
+
+    @property
+    def llm_hf_temperature(self) -> float:
+        return self._config_data.get("llm", {}).get("huggingface", {}).get("temperature", 0.7)
+
+    @property
+    def llm_hf_device(self) -> str:
+        return self._config_data.get("llm", {}).get("huggingface", {}).get("device", "auto")
+
+    @property
+    def llm_hf_cache_dir(self) -> str:
+        return self._config_data.get("llm", {}).get("huggingface", {}).get("cache_dir", "./models")
+
+    # Legacy properties for backward compatibility (deprecated)
     @property
     def llm_model_name(self) -> str:
-        return self._config_data.get("llm", {}).get("model_name", "microsoft/Phi-3-mini-4k-instruct")
+        """Deprecated: Use llm_hf_model_name instead"""
+        return self.llm_hf_model_name
 
     @property
     def llm_max_new_tokens(self) -> int:
-        return self._config_data.get("llm", {}).get("max_new_tokens", 1000)
+        """Deprecated: Use llm_hf_max_new_tokens instead"""
+        return self.llm_hf_max_new_tokens
 
     @property
     def llm_temperature(self) -> float:
-        return self._config_data.get("llm", {}).get("temperature", 0.7)
+        """Deprecated: Use llm_hf_temperature instead"""
+        return self.llm_hf_temperature
 
     @property
     def llm_device(self) -> str:
-        return self._config_data.get("llm", {}).get("device", "auto")
+        """Deprecated: Use llm_hf_device instead"""
+        return self.llm_hf_device
 
     @property
     def llm_cache_dir(self) -> str:
-        return self._config_data.get("llm", {}).get("cache_dir", "./models")
+        """Deprecated: Use llm_hf_cache_dir instead"""
+        return self.llm_hf_cache_dir
 
     @property
     def embeddings_model_name(self) -> str:

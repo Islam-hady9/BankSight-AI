@@ -14,11 +14,33 @@ frontend:
   page_title: "BankSight AI"
   page_icon: "🏦"
 
-# LLM Settings (HuggingFace)
+# LLM Settings
 llm:
   # ==========================================
-  # MODEL RECOMMENDATIONS FOR RTX 4060 Ti (16GB VRAM)
+  # LLM PROVIDER SELECTION
   # ==========================================
+  # Options: "groq" (fast cloud API) or "huggingface" (local GPU inference)
+  provider: "groq"  # Change to "huggingface" for local inference
+
+  # ==========================================
+  # GROQ API SETTINGS (Fast Cloud Inference)
+  # ==========================================
+  groq:
+    model_name: "moonshotai/kimi-k2-instruct-0905"  # Fast reasoning model
+    # Other available models:
+    # - "llama-3.3-70b-versatile" (very powerful)
+    # - "llama-3.1-8b-instant" (fastest)
+    # - "mixtral-8x7b-32768" (long context)
+    max_tokens: 4096
+    temperature: 0.6
+    top_p: 1.0
+    stream: false  # Set to true for streaming responses
+    timeout: 30  # API timeout in seconds
+
+  # ==========================================
+  # HUGGINGFACE LOCAL SETTINGS (GPU Inference)
+  # ==========================================
+  # MODEL RECOMMENDATIONS FOR RTX 4060 Ti (16GB VRAM)
 
   # 🏆 BEST QUALITY (Recommended for RTX 4060 Ti):
   # - "mistralai/Mistral-7B-Instruct-v0.3" (7B, excellent quality, ~14GB VRAM)
@@ -36,23 +58,20 @@ llm:
 
   # ⚠️  NOTE: Llama models may require HuggingFace access approval
 
-  # CURRENT SELECTION (Change this to your preferred model):
-  model_name: "mistralai/Mistral-7B-Instruct-v0.3"
+  huggingface:
+    model_name: "mistralai/Mistral-7B-Instruct-v0.3"
+    max_new_tokens: 1000
+    temperature: 0.7
+    top_p: 0.9
+    device: "auto"  # Options: "auto", "cuda", "cpu"
+    torch_dtype: "auto"  # Options: "auto", "float16", "bfloat16"
+    cache_dir: "./models"  # Download models here
 
-  max_new_tokens: 1000
-  temperature: 0.7
-  top_p: 0.9
-  device: "auto"  # Options: "auto", "cuda", "cpu"
-  torch_dtype: "auto"  # Options: "auto", "float16", "bfloat16"
-
-  # Model caching
-  cache_dir: "./models"  # Download models here
-
-  # Quantization (Reduces VRAM usage)
-  # For RTX 4060 Ti 16GB: Usually not needed for 7B-8B models
-  # Enable for larger models (12B+) or to save VRAM
-  load_in_8bit: false    # Halves VRAM usage, slight quality loss
-  load_in_4bit: false    # Quarters VRAM usage, more quality loss (needs bitsandbytes)
+    # Quantization (Reduces VRAM usage)
+    # For RTX 4060 Ti 16GB: Usually not needed for 7B-8B models
+    # Enable for larger models (12B+) or to save VRAM
+    load_in_8bit: false    # Halves VRAM usage, slight quality loss
+    load_in_4bit: false    # Quarters VRAM usage, more quality loss (needs bitsandbytes)
 
 # Embeddings Settings
 embeddings:

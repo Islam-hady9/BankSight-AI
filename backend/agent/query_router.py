@@ -5,8 +5,13 @@ from typing import Dict
 from .intent_classifier import Intent
 from ..rag.retriever import retrieve_and_generate
 from ..actions.banking_actions import execute_action
-from ..llm.huggingface_client import llm_client
-from ..llm.prompts import CHITCHAT_PROMPT, ACTION_EXTRACTION_PROMPT
+from ..llm.client import llm_client
+from ..llm.prompts import (
+    CHITCHAT_PROMPT,
+    ACTION_EXTRACTION_PROMPT,
+    create_chitchat_messages
+)
+from ..config import config
 from ..utils.logger import logger
 import re
 
@@ -79,8 +84,15 @@ async def handle_action(query: str) -> Dict:
 
 async def handle_chitchat(query: str) -> str:
     """Handle casual conversation."""
-    prompt = CHITCHAT_PROMPT.format(query=query)
-    response = llm_client.generate(prompt, max_new_tokens=100)
+    # Check if using Groq (supports chat messages) or HuggingFace (needs prompt string)
+    if config.llm_provider == "groq" and hasattr(llm_client, 'generate_from_messages'):
+        # Use chat messages format for Groq
+        messages = create_chitchat_messages(query)
+        response = llm_client.generate_from_messages(messages, max_tokens=100)
+    else:
+        # Use prompt string for HuggingFace
+        prompt = CHITCHAT_PROMPT.format(query=query)
+        response = llm_client.generate(prompt, max_new_tokens=100)
     return response
 
 
