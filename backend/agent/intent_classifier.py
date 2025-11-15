@@ -3,7 +3,7 @@ Intent classification for user queries.
 """
 from enum import Enum
 from typing import Dict
-from ..llm.huggingface_client import llm_client
+from ..llm.client import llm_client  # Use client factory (Groq API)
 from ..llm.prompts import INTENT_CLASSIFICATION_PROMPT
 from ..utils.logger import logger
 
@@ -40,10 +40,13 @@ def classify_intent(query: str) -> Intent:
         "fee", "requirement", "policy", "explain", "tell me about"
     ]
 
-    # Chitchat keywords
+    # Chitchat keywords (greetings, thanks, identity questions)
     chitchat_keywords = [
         "hello", "hi", "hey", "thanks", "thank you", "bye",
-        "good morning", "good afternoon"
+        "good morning", "good afternoon", "good evening",
+        "who are you", "what are you", "who is this",
+        "what can you do", "what do you do", "introduce yourself",
+        "your name", "are you", "مرحبا", "شكرا"  # Arabic greetings
     ]
 
     # Simple keyword-based classification (fast)
