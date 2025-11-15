@@ -1,41 +1,36 @@
 """
-LLM client factory for switching between providers.
+LLM client factory for Groq API.
 """
-from typing import Union
 from ..config import config
 from ..utils.logger import logger
 
 
-def get_llm_client() -> Union["GroqLLM", "HuggingFaceLLM"]:
+def get_llm_client():
     """
-    Get the appropriate LLM client based on configuration.
+    Get the Groq LLM client.
 
     Returns:
-        GroqLLM or HuggingFaceLLM instance
+        GroqLLM instance
+
+    Raises:
+        RuntimeError: If Groq API key is not configured
     """
     provider = config.llm_provider
 
     if provider == "groq":
-        try:
-            from .groq_client import groq_client
-            logger.info("Using Groq API for LLM inference")
-            return groq_client
-        except Exception as e:
-            logger.error(f"Failed to initialize Groq client: {e}")
-            logger.warning("Falling back to HuggingFace local inference")
-            from .huggingface_client import llm_client
-            return llm_client
-
-    elif provider == "huggingface":
-        from .huggingface_client import llm_client
-        logger.info("Using HuggingFace local inference")
-        return llm_client
-
+        from .groq_client import groq_client
+        logger.info("✅ Using Groq API for LLM inference (CPU-only, no GPU needed)")
+        return groq_client
     else:
-        logger.error(f"Unknown LLM provider: {provider}, falling back to HuggingFace")
-        from .huggingface_client import llm_client
-        return llm_client
+        logger.error(f"Unsupported LLM provider: {provider}")
+        logger.error("This application requires Groq API. Please set llm.provider='groq' in config.yaml")
+        raise RuntimeError(
+            f"Unsupported LLM provider: {provider}. "
+            "This application requires Groq API. "
+            "Please ensure llm.provider='groq' in config.yaml and "
+            "GROQ_API_KEY is set in your .env file."
+        )
 
 
-# Global LLM client (automatically selects based on config)
+# Global LLM client (Groq API only)
 llm_client = get_llm_client()
