@@ -207,7 +207,15 @@ Hello! Who are you?
 
 **Expected:** The AI responds in the same language you used!
 
-### 5. More Examples
+### 5. Try Financial Recommendations (NEW!)
+
+```
+Analyze financial health for customer customer_001
+```
+
+**Expected:** The AI will provide a comprehensive financial health analysis with a score (0-100) and personalized recommendations.
+
+### 6. More Examples
 
 **Questions (uses RAG):**
 - "What are the requirements to open an account?"
@@ -218,6 +226,11 @@ Hello! Who are you?
 - "Show my last 5 transactions"
 - "Transfer $100 from checking to savings"
 - "Search for grocery transactions"
+
+**Financial Advisor (NEW!):**
+- "What savings plans do you recommend for customer_003?"
+- "Am I eligible for a home loan? Check customer_001"
+- "Recommend appropriate loans for customer customer_005"
 
 **Chitchat:**
 - "Thank you!"
@@ -353,11 +366,16 @@ Once you're comfortable:
    - Adjust response styles
 
 4. **Review Architecture**
-   - Read `ARCHITECTURE.md`
+   - Read `docs/ARCHITECTURE.md`
    - Understand the RAG pipeline
    - Learn about intent classification
 
-5. **Deploy to Production**
+5. **Explore Advanced Features**
+   - Read `docs/LANGCHAIN_AGENT.md` - Learn about conversation memory & tool calling
+   - Read `docs/RECOMMENDATION_SYSTEM.md` - Understand financial advisor capabilities
+   - Try the demo: `python examples/recommendation_system_demo.py`
+
+6. **Deploy to Production**
    - Use Docker (see Dockerfile if available)
    - Deploy to cloud (Heroku, Render, Railway)
    - Scale with Kubernetes
@@ -367,8 +385,11 @@ Once you're comfortable:
 ## 📚 Additional Resources
 
 - **README.md** - Project overview and features
-- **ARCHITECTURE.md** - System design details
-- **PROJECT_PLAN.md** - Learning roadmap
+- **docs/ARCHITECTURE.md** - System design details
+- **docs/PROJECT_PLAN.md** - Learning roadmap
+- **docs/LANGCHAIN_AGENT.md** - Conversation memory & tool calling guide
+- **docs/RECOMMENDATION_SYSTEM.md** - Financial advisor documentation
+- **docs/API_REFERENCE.md** - Complete API documentation
 - **Groq Docs** - https://console.groq.com/docs
 - **FastAPI Docs** - https://fastapi.tiangolo.com
 - **Streamlit Docs** - https://docs.streamlit.io
