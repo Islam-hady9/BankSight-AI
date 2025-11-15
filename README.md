@@ -16,6 +16,7 @@ A **learning project** combining modern AI technologies with **ultra-fast cloud 
 ✅ **FastAPI Backend** - Professional REST API architecture
 ✅ **Groq API** - Lightning-fast cloud LLM inference (10-20x faster!)
 ✅ **LangChain Agent** - Tool-calling agent with conversation memory 🆕
+✅ **Financial Advisor** - AI-powered recommendations for savings & loans 🆕
 ✅ **Streamlit Frontend** - Beautiful, interactive chat UI
 ✅ **RAG System** - Ask questions about uploaded documents
 ✅ **Banking Tools** - Balance checks, transfers, transaction search
@@ -84,7 +85,28 @@ You: "Transfer $100 to savings"
 AI: "✅ Transfer completed! New balance: $5,330.50"
 ```
 
-### 3. Smart Agent
+### 3. Financial Recommendations 🆕
+AI-powered financial advisor that analyzes customer data:
+```
+You: "Analyze my financial health for customer customer_001"
+AI: "Your financial health score is 72/100 (Good)
+
+     Strengths:
+     • Excellent savings rate of 38.8%
+     • Strong credit score of 750
+
+     I recommend starting with a High-Yield Savings Account
+     and you're eligible for a home mortgage up to $255,000."
+```
+
+**Features:**
+- Financial health scoring (0-100)
+- Personalized savings plan recommendations
+- Loan eligibility assessment
+- Risk-based decision making with safety guardrails
+- Debt-to-Income ratio analysis
+
+### 4. Smart Agent
 - Classifies intent (question vs action)
 - Routes to appropriate handler
 - Maintains conversation context
@@ -177,6 +199,10 @@ BankSight-AI/
 │   │   ├── embeddings.py
 │   │   ├── vector_store.py
 │   │   └── retriever.py
+│   ├── recommendations/       # Financial Advisor 🆕
+│   │   ├── prompts.py        # System prompts
+│   │   ├── recommendation_engine.py
+│   │   └── recommendation_tools.py
 │   └── actions/               # Banking Actions
 │       ├── banking_data.py
 │       └── banking_actions.py
@@ -189,6 +215,8 @@ BankSight-AI/
 ├── data/
 │   ├── documents/             # Upload docs here
 │   ├── banking_dummy_data.json
+│   ├── customer_profiles.json  # Customer financial data 🆕
+│   ├── financial_products.json # Savings/loan catalog 🆕
 │   └── vector_db/             # ChromaDB storage
 │
 ├── config.yaml                # Configuration
@@ -258,6 +286,12 @@ rag:
 - "Show my last 10 transactions"
 - "Transfer $50 from checking to savings"
 - "Search for grocery transactions"
+
+### Financial Recommendations 🆕
+- "Analyze financial health for customer customer_001"
+- "What savings plans do you recommend for customer_003?"
+- "Am I eligible for a home loan? Check customer customer_001"
+- "Recommend appropriate loans for customer customer_005"
 
 ### Follow-up Questions
 ```
@@ -421,6 +455,7 @@ Completing this project teaches:
 - [x] Intent classification
 - [x] **Conversation memory with LangChain agent** 🆕
 - [x] Tool-calling agent with intelligent action execution
+- [x] **AI-powered financial recommendation system** 🆕
 - [ ] RAG integration as LangChain tool
 - [ ] More file types (Excel, images)
 - [ ] Response streaming from Groq
@@ -461,6 +496,7 @@ MIT License - Free to use, modify, and learn from!
 
 - **Setup Issues?** → [QUICK_START.md](QUICK_START.md) - Detailed installation guide
 - **LangChain Agent?** → [docs/LANGCHAIN_AGENT.md](docs/LANGCHAIN_AGENT.md) - Conversation memory & tool calling 🆕
+- **Financial Advisor?** → [docs/RECOMMENDATION_SYSTEM.md](docs/RECOMMENDATION_SYSTEM.md) - AI recommendations for savings & loans 🆕
 - **Architecture?** → [ARCHITECTURE.md](ARCHITECTURE.md) - System design details
 - **Learning Path?** → [PROJECT_PLAN.md](PROJECT_PLAN.md) - 4-week roadmap
 - **Groq API Help?** → [Groq Documentation](https://console.groq.com/docs) - Official API docs
