@@ -1,5 +1,5 @@
 """
-Streamlit frontend for BankSight AI.
+Streamlit frontend for Libya Banks AI.
 """
 import streamlit as st
 from utils.api_client import api_client
@@ -8,7 +8,7 @@ import time
 
 # Page config
 st.set_page_config(
-    page_title="BankSight AI",
+    page_title="Libya Banks AI",
     page_icon="🏦",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -47,7 +47,7 @@ if "session_id" not in st.session_state:
     st.session_state.session_id = str(uuid.uuid4())
 
 # Header
-st.markdown('<div class="main-header">🏦 BankSight AI</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🏦 Libya Banks AI</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">Your Intelligent Banking Assistant</div>', unsafe_allow_html=True)
 
 # Sidebar
@@ -119,26 +119,16 @@ with st.sidebar:
     st.divider()
     st.subheader("💡 Example Queries")
     st.markdown("""
-    **📄 Document Q&A:**
+    **Questions:**
     - What are the account opening requirements?
     - What are the wire transfer fees?
-    - Explain the overdraft policy
+    - What is the overdraft policy?
 
-    **💳 Banking Actions:**
+    **Actions:**
     - What is my checking account balance?
     - Show my last 5 transactions
     - Transfer $100 from checking to savings
     - Search for grocery transactions
-
-    **📊 Financial Advisor:**
-    - Analyze financial health for customer customer_001
-    - What savings plans do you recommend for customer_003?
-    - Am I eligible for a home loan? Check customer_001
-    - Recommend loans for customer customer_005
-
-    **💬 General:**
-    - مرحباً! كيف يمكنك مساعدتي؟ (Arabic support)
-    - What can you help me with?
     """)
 
 # Main chat interface
@@ -199,4 +189,4 @@ if prompt := st.chat_input("Ask me anything about banking..."):
 
 # Footer
 st.divider()
-st.caption("🏦 BankSight AI - Powered by HuggingFace Transformers | Local & Private")
+st.caption("🏦 Libya Banks AI - Powered by HuggingFace Transformers | Local & Private")
