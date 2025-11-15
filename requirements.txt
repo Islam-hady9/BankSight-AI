@@ -7,7 +7,7 @@ python-multipart
 
 # LLM - Groq API (Cloud Inference - CPU Only)
 groq  # Fast cloud inference via Groq API
-langchain>=0.1.0
+langchain==0.3.25
 langchain-groq
 langchain-community
 
