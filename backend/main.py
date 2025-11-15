@@ -14,7 +14,7 @@ from .agent.agent import agent
 from .rag.document_loader import load_document
 from .rag.chunker import chunk_document
 from .rag.vector_store import vector_store
-from .llm.huggingface_client import llm_client
+from .llm.client import llm_client  # Use client factory (Groq API)
 from .utils.logger import logger
 
 # Create FastAPI app
