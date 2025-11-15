@@ -1,5 +1,5 @@
 """
-Streamlit frontend for BankSight AI.
+Streamlit frontend for Libya Banks AI.
 """
 import streamlit as st
 from utils.api_client import api_client
@@ -8,7 +8,7 @@ import time
 
 # Page config
 st.set_page_config(
-    page_title="BankSight AI",
+    page_title="Libya Banks AI",
     page_icon="🏦",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -47,7 +47,7 @@ if "session_id" not in st.session_state:
     st.session_state.session_id = str(uuid.uuid4())
 
 # Header
-st.markdown('<div class="main-header">🏦 BankSight AI</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🏦 Libya Banks AI</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">Your Intelligent Banking Assistant</div>', unsafe_allow_html=True)
 
 # Sidebar
@@ -189,4 +189,4 @@ if prompt := st.chat_input("Ask me anything about banking..."):
 
 # Footer
 st.divider()
-st.caption("🏦 BankSight AI - Powered by HuggingFace Transformers | Local & Private")
+st.caption("🏦 Libya Banks AI - Powered by HuggingFace Transformers | Local & Private")
