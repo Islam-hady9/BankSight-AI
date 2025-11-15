@@ -34,16 +34,33 @@ app.add_middleware(
 )
 
 # Request models
+class OldMessage(BaseModel):
+    """Old conversation message for context restoration."""
+    user: Optional[str] = None
+    assistant: Optional[str] = None
+
+
 class ChatRequest(BaseModel):
+    """Chat request with optional conversation history."""
     message: str
     session_id: str = "default"
+    old_messages: Optional[List[OldMessage]] = None
+
+
+class ToolUsage(BaseModel):
+    """Tool usage information."""
+    tool: str
+    input: dict
 
 
 class ChatResponse(BaseModel):
+    """Chat response with tools usage tracking."""
     success: bool
     response: str
     intent: str
     sources: List[dict] = []
+    tools_used: Optional[List[ToolUsage]] = None
+    agent_type: Optional[str] = None
 
 
 @app.on_event("startup")
@@ -83,19 +100,160 @@ async def health_check():
 
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
-    """Main chat endpoint."""
+    """
+    Main chat endpoint with LangChain agent support.
+
+    Supports:
+    - Conversation memory per session
+    - Old message injection for context restoration
+    - Tool calling with banking actions
+    - Bilingual responses (English/Arabic)
+    """
     try:
-        result = await agent.process_query(request.message, request.session_id)
+        # Convert old_messages to dict format if provided
+        old_messages_dict = None
+        if request.old_messages:
+            old_messages_dict = [msg.model_dump() for msg in request.old_messages]
+
+        # Process query with agent
+        result = await agent.process_query(
+            query=request.message,
+            session_id=request.session_id,
+            old_messages=old_messages_dict
+        )
 
         return ChatResponse(
             success=result["success"],
             response=result["response"],
             intent=result["intent"],
-            sources=result.get("sources", [])
+            sources=result.get("sources", []),
+            tools_used=result.get("tools_used"),
+            agent_type=result.get("metadata", {}).get("agent_type")
         )
 
     except Exception as e:
         logger.error(f"Chat error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/agent/clear-session/{session_id}")
+async def clear_agent_session(session_id: str):
+    """
+    Clear conversation memory for a specific session.
+
+    Useful for:
+    - Resetting conversation context
+    - Freeing memory for inactive sessions
+    - Starting fresh conversations
+    """
+    try:
+        # Only available with LangChain agent
+        if agent.use_langchain:
+            from .agent.langchain_agent import clear_agent_session as clear_session
+            clear_session(session_id)
+            return {
+                "success": True,
+                "message": f"Session {session_id} cleared",
+                "agent_type": "langchain"
+            }
+        else:
+            return {
+                "success": False,
+                "message": "Session management only available with LangChain agent",
+                "agent_type": "classic"
+            }
+
+    except Exception as e:
+        logger.error(f"Clear session error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/agent/memory/{session_id}")
+async def get_conversation_memory(session_id: str):
+    """
+    Get conversation history for a specific session.
+
+    Returns the full conversation memory including:
+    - User messages
+    - Assistant responses
+    - Tool calls (if any)
+    """
+    try:
+        # Only available with LangChain agent
+        if agent.use_langchain:
+            from .agent.langchain_agent import get_agent
+            session_agent = get_agent(session_id)
+            history = session_agent.get_memory_history()
+
+            return {
+                "success": True,
+                "session_id": session_id,
+                "messages": history,
+                "count": len(history),
+                "agent_type": "langchain"
+            }
+        else:
+            # Return classic agent history
+            return {
+                "success": True,
+                "session_id": session_id,
+                "messages": agent.conversation_history,
+                "count": len(agent.conversation_history),
+                "agent_type": "classic"
+            }
+
+    except Exception as e:
+        logger.error(f"Get memory error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/agent/info")
+async def get_agent_info():
+    """
+    Get information about the current agent configuration.
+
+    Returns:
+    - Agent type (LangChain or classic)
+    - Available features
+    - Configuration settings
+    """
+    try:
+        info = {
+            "agent_type": "langchain" if agent.use_langchain else "classic",
+            "langchain_available": agent.use_langchain,
+            "features": {
+                "conversation_memory": agent.use_langchain,
+                "tool_calling": agent.use_langchain,
+                "session_management": agent.use_langchain,
+                "rag": True,
+                "bilingual": True
+            }
+        }
+
+        # Add LangChain-specific info if available
+        if agent.use_langchain:
+            info["config"] = {
+                "max_iterations": config.agent_max_iterations,
+                "verbose": config.agent_verbose,
+                "llm_model": config.llm_groq_model_name,
+                "llm_provider": config.llm_provider
+            }
+
+            # Get tool count
+            try:
+                from .agent.langchain_tools import create_banking_tools
+                tools = create_banking_tools()
+                info["tools"] = [
+                    {"name": tool.name, "description": tool.description}
+                    for tool in tools
+                ]
+            except Exception:
+                pass
+
+        return info
+
+    except Exception as e:
+        logger.error(f"Get agent info error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
