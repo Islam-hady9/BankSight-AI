@@ -210,6 +210,22 @@ Get agent configuration and capabilities.
     {
       "name": "SearchTransactions",
       "description": "Search for specific transactions..."
+    },
+    {
+      "name": "AnalyzeFinancialHealth",
+      "description": "Analyze customer's complete financial health with 0-100 scoring..."
+    },
+    {
+      "name": "RecommendSavingsPlans",
+      "description": "Recommend personalized savings plans based on financial situation..."
+    },
+    {
+      "name": "CheckLoanEligibility",
+      "description": "Check if customer qualifies for a specific loan type..."
+    },
+    {
+      "name": "RecommendLoans",
+      "description": "Recommend appropriate loan products based on customer goals..."
     }
   ]
 }
@@ -598,6 +614,105 @@ curl -X POST http://localhost:8000/api/agent/clear-session/user_123
 
 ---
 
+### Example 8: Financial Health Analysis 🆕
+
+**Request:**
+
+```bash
+curl -X POST http://localhost:8000/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Analyze financial health for customer customer_001",
+    "session_id": "advisor_session"
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "response": "Based on my analysis of customer_001:\n\n📊 Financial Health Score: 72/100 (Good)\n\n💰 Income Analysis:\n• Monthly Income: $8,500\n• Monthly Expenses: $5,200\n• Net Cashflow: +$3,300\n• Savings Rate: 38.8% (Excellent!)\n\n💳 Debt Analysis:\n• Total Debt: $20,500\n• DTI Ratio: 26.7% (Healthy)\n• Monthly Payments: $650\n\n✅ Strengths:\n• Excellent savings rate of 38.8%\n• Strong credit score of 750\n• Healthy debt-to-income ratio\n\n⚠️ Areas to Monitor:\n• Student loan debt of $18,000\n• Credit card balance of $2,500",
+  "intent": "langchain_agent",
+  "tools_used": [
+    {
+      "tool": "AnalyzeFinancialHealth",
+      "input": {"customer_id": "customer_001"}
+    }
+  ],
+  "agent_type": "langchain"
+}
+```
+
+---
+
+### Example 9: Savings Recommendations 🆕
+
+**Request:**
+
+```bash
+curl -X POST http://localhost:8000/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "What savings plans do you recommend for customer_003?",
+    "session_id": "advisor_session"
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "response": "For customer_003, I recommend the following savings plans:\n\n🎯 HIGH PRIORITY:\n1. Basic Savings Account (0.5% APY)\n   • Recommended deposit: $200/month\n   • Goal: Build 3-month emergency fund ($6,000)\n   • Why: Essential safety net for financial stability\n\n📈 MEDIUM PRIORITY:\n2. Goal Saver Account (3.0% APY)\n   • Recommended deposit: $150/month\n   • Goal: Save for future goals\n   • Why: Good for medium-term savings goals",
+  "intent": "langchain_agent",
+  "tools_used": [
+    {
+      "tool": "RecommendSavingsPlans",
+      "input": {"customer_id": "customer_003"}
+    }
+  ],
+  "agent_type": "langchain"
+}
+```
+
+---
+
+### Example 10: Loan Eligibility Check 🆕
+
+**Request:**
+
+```bash
+curl -X POST http://localhost:8000/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Am I eligible for a home loan? Check customer_001",
+    "session_id": "advisor_session"
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "response": "Great news! customer_001 is ELIGIBLE for a home mortgage:\n\n✅ Qualification Details:\n• Maximum Loan Amount: $255,000\n• Interest Rate Range: 3.5% - 7.0%\n\nWhy You Qualify:\n✓ Credit score 750 exceeds requirement (700+)\n✓ DTI ratio 26.7% is well below 36% threshold\n✓ Stable full-time employment for 48+ months\n✓ Sufficient income for monthly payments\n\n⚠️ Recommendations:\n• Aim for 20% down payment ($51,000) to avoid PMI\n• Keep DTI below 28% after mortgage\n• Get pre-approved to lock in rates",
+  "intent": "langchain_agent",
+  "tools_used": [
+    {
+      "tool": "CheckLoanEligibility",
+      "input": {
+        "customer_id": "customer_001",
+        "loan_type": "mortgage"
+      }
+    }
+  ],
+  "agent_type": "langchain"
+}
+```
+
+---
+
 ## Python Client Example
 
 ```python
@@ -718,12 +833,16 @@ Currently no authentication required. In production:
 
 ## Additional Resources
 
-- **Full Documentation:** [docs/LANGCHAIN_AGENT.md](docs/LANGCHAIN_AGENT.md)
+- **Full Documentation:**
+  - [docs/LANGCHAIN_AGENT.md](LANGCHAIN_AGENT.md) - Conversation memory & tool calling
+  - [docs/RECOMMENDATION_SYSTEM.md](RECOMMENDATION_SYSTEM.md) - Financial advisor system 🆕
 - **Examples:** [examples/](examples/)
   - `langchain_agent_demo.py` - Python examples
+  - `recommendation_system_demo.py` - Financial advisor demos 🆕
   - `api_examples.sh` - cURL examples
-- **Migration Guide:** [MIGRATION_GROQ.md](MIGRATION_GROQ.md)
-- **Quick Start:** [QUICK_START.md](QUICK_START.md)
+- **Migration Guide:** [docs/MIGRATION_GROQ.md](MIGRATION_GROQ.md)
+- **Quick Start:** [docs/QUICK_START.md](QUICK_START.md)
+- **Architecture:** [docs/ARCHITECTURE.md](ARCHITECTURE.md)
 
 ---
 

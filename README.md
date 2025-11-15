@@ -392,7 +392,7 @@ python -m uvicorn backend.main:app --port 8001
 ### 📖 Need More Help?
 
 For detailed solutions, check the documentation:
-- **Installation Issues:** See [QUICK_START.md](QUICK_START.md)
+- **Installation Issues:** See [docs/QUICK_START.md](docs/QUICK_START.md)
 - **API Configuration:** See `config.yaml` and `.env.example`
 - **Groq API Docs:** https://console.groq.com/docs
 
@@ -494,11 +494,12 @@ MIT License - Free to use, modify, and learn from!
 
 ## 📞 Questions?
 
-- **Setup Issues?** → [QUICK_START.md](QUICK_START.md) - Detailed installation guide
+- **Setup Issues?** → [docs/QUICK_START.md](docs/QUICK_START.md) - Detailed installation guide
 - **LangChain Agent?** → [docs/LANGCHAIN_AGENT.md](docs/LANGCHAIN_AGENT.md) - Conversation memory & tool calling 🆕
 - **Financial Advisor?** → [docs/RECOMMENDATION_SYSTEM.md](docs/RECOMMENDATION_SYSTEM.md) - AI recommendations for savings & loans 🆕
-- **Architecture?** → [ARCHITECTURE.md](ARCHITECTURE.md) - System design details
-- **Learning Path?** → [PROJECT_PLAN.md](PROJECT_PLAN.md) - 4-week roadmap
+- **Architecture?** → [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - System design details
+- **Learning Path?** → [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md) - 4-week roadmap
+- **API Reference?** → [docs/API_REFERENCE.md](docs/API_REFERENCE.md) - Complete API documentation 🆕
 - **Groq API Help?** → [Groq Documentation](https://console.groq.com/docs) - Official API docs
 - **Rate Limits?** → Check your [Groq Dashboard](https://console.groq.com/settings/limits)
 

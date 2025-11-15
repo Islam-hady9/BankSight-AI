@@ -1,6 +1,6 @@
-# BankSight-AI: Simplified Learning Project
+# BankSight-AI: Learning Project
 
-A **simple, local-first** AI banking assistant to learn RAG and AI agents - runs entirely on your personal machine!
+A **cloud-powered** AI banking assistant to learn RAG, AI agents, and LangChain - with ultra-fast cloud inference!
 
 ---
 
@@ -9,76 +9,103 @@ A **simple, local-first** AI banking assistant to learn RAG and AI agents - runs
 This is a **learning project** to understand:
 1. **RAG (Retrieval-Augmented Generation)** - How to make AI answer questions from your documents
 2. **AI Agents** - How to make AI perform actions based on user requests
-3. **Vector Databases** - How embeddings and semantic search work
-4. **Document Processing** - How to extract and chunk documents
+3. **LangChain** - Tool calling and conversation memory
+4. **Financial Recommendations** - AI-powered advisory system
+5. **Vector Databases** - How embeddings and semantic search work
+6. **Cloud LLM APIs** - Fast inference with Groq API
+7. **Document Processing** - How to extract and chunk documents
 
-**NOT a goal**: Production-ready banking system, enterprise features, cloud deployment
+**Status**: ✅ COMPLETED with all features implemented!
 
----
-
-## ✨ What You'll Build
-
-A simple chat interface where you can:
-- **Upload banking documents** (policies, FAQs, statements) and ask questions about them
-- **Perform banking actions** via natural language (check balance, transfer money, view transactions)
-- **Use dummy data** - fake accounts, transactions, users for testing
-
-**Everything runs locally** - no cloud services, no paid APIs!
+**NOT a goal**: Production-ready banking system (this is for learning)
 
 ---
 
-## 🏗️ Simple Architecture
+## ✨ What You've Built
+
+A complete chat interface with:
+- **Document Q&A (RAG)** - Upload banking documents and ask questions
+- **Banking Actions** - Check balance, transfer money, view transactions via natural language
+- **Financial Advisor** - AI-powered recommendations for savings and loans 🆕
+- **Conversation Memory** - Multi-turn conversations with context retention 🆕
+- **Tool Calling** - LangChain agent with 8 intelligent tools 🆕
+- **Bilingual Support** - Works in English and Arabic
+
+**Cloud-powered** - Ultra-fast Groq API (10-20x faster than local models!)
+**CPU-only** - No GPU required, runs on minimal hardware (2GB RAM)
+
+---
+
+## 🏗️ Current Architecture
 
 ```
 ┌─────────────────────────────────────────┐
 │      Streamlit Web Interface            │
-│      (Chat UI)                          │
+│      (Chat UI + Document Upload)        │
+└─────────────┬───────────────────────────┘
+              │ REST API
+┌─────────────▼───────────────────────────┐
+│      FastAPI Backend                    │
 └─────────────┬───────────────────────────┘
               │
 ┌─────────────▼───────────────────────────┐
-│         AI Agent                        │
-│  - Understands user intent              │
-│  - Routes to RAG or Actions             │
+│    LangChain Agent 🆕                   │
+│  - Conversation Memory                  │
+│  - Tool Selection & Execution           │
 └─────────────┬───────────────────────────┘
               │
-     ┌────────┴────────┐
-     │                 │
-┌────▼─────┐    ┌─────▼──────┐
-│   RAG    │    │  Actions   │
-│  System  │    │  Handler   │
-└────┬─────┘    └─────┬──────┘
-     │                │
-┌────▼─────┐    ┌─────▼──────┐
-│ ChromaDB │    │   Dummy    │
-│ (Vector) │    │   Data     │
-│          │    │  (JSON)    │
-└──────────┘    └────────────┘
+     ┌────────┼────────┬─────────┐
+     │        │        │         │
+┌────▼──┐ ┌──▼───┐ ┌──▼──────┐ ┌▼──────┐
+│ RAG   │ │Banking│ │Financial│ │ Groq  │
+│System │ │Tools  │ │Advisor🆕│ │ API   │
+└───┬───┘ └──┬───┘ └──┬──────┘ └───────┘
+    │        │        │
+┌───▼──┐ ┌──▼───┐ ┌──▼──────────┐
+│Vector│ │Dummy │ │Financial    │
+│  DB  │ │Data  │ │Data 🆕      │
+└──────┘ └──────┘ └─────────────┘
 ```
 
-**That's it!** No Kubernetes, no microservices, no complex infrastructure.
+**Professional architecture** - Clean separation of concerns, RESTful API, modular design
 
 ---
 
-## 🛠️ Technology Stack (Simplified)
+## 🛠️ Technology Stack (Current)
 
-### Core (No Paid APIs!)
-- **LLM**: Local HuggingFace model via `transformers` or `ollama`
-  - Options: Mistral-7B, Llama-3-8B, Phi-3, Gemma-7B
+### Core (Cloud + Local)
+- **LLM**: Groq API (Cloud) 🆕
+  - Model: moonshotai/kimi-k2-instruct-0905
+  - 10-20x faster than local models
+  - Free tier available
+- **Agent**: LangChain 0.1.0+ 🆕
+  - Tool calling
+  - Conversation memory
+  - Session management
 - **Embeddings**: `sentence-transformers` (all-MiniLM-L6-v2)
-- **Vector DB**: ChromaDB (runs in-memory or local file)
-- **Web UI**: Streamlit (simple Python web framework)
-- **Backend**: Just Python scripts, no FastAPI needed
+- **Vector DB**: ChromaDB (local file storage)
+- **Backend**: FastAPI (REST API) 🆕
+- **Web UI**: Streamlit
 
 ### Document Processing
-- **PDFs**: PyPDF2 or pdfplumber
+- **PDFs**: PyPDF2
 - **Text files**: Built-in Python
+- **Word docs**: python-docx
 - **CSV**: pandas
 
 ### Data Storage
-- **Documents**: Local filesystem
-- **Banking Data**: JSON files (dummy accounts, transactions)
-- **Vector Store**: ChromaDB (local file)
-- **Chat History**: JSON or SQLite
+- **Documents**: Local filesystem (./data/documents/)
+- **Banking Data**: JSON files (./data/banking_dummy_data.json)
+- **Financial Data**: JSON files (./data/customer_profiles.json, ./data/financial_products.json) 🆕
+- **Vector Store**: ChromaDB (./data/vector_db/)
+- **Chat History**: In-memory per session (LangChain) 🆕
+
+### New Features
+- **Financial Advisor System** 🆕
+  - 4 recommendation tools
+  - Financial health scoring (0-100)
+  - Savings & loan recommendations
+  - Risk-based decision making
 
 ---
 
@@ -116,26 +143,43 @@ BankSight-AI/
 
 ---
 
-## 🚀 Features (Simplified)
+## 🚀 Features (Completed)
 
-### 1. RAG System
-- **Upload documents**: PDFs, TXT files
+### 1. RAG System ✅
+- **Upload documents**: PDFs, TXT, DOCX, CSV files
 - **Automatic processing**: Extract text, chunk, embed
 - **Ask questions**: "What are the account opening requirements?"
 - **Get answers with sources**: Shows which document the answer came from
+- **Vector search**: Semantic search with ChromaDB
 
-### 2. Banking Actions (Dummy Data)
+### 2. Banking Actions (Dummy Data) ✅
 - **Check balance**: "What's my checking account balance?"
 - **View transactions**: "Show my last 5 transactions"
 - **Transfer money**: "Transfer $100 from checking to savings"
 - **Search transactions**: "Show all transactions over $50"
-- **Account info**: "List all my accounts"
+- **4 LangChain tools**: GetAccountBalance, GetTransactions, TransferFunds, SearchTransactions
 
-### 3. Chat Interface
-- Simple Streamlit chat UI
+### 3. Financial Advisor System 🆕 ✅
+- **Financial health analysis**: 0-100 scoring with detailed breakdown
+- **Savings recommendations**: Personalized plans with monthly targets
+- **Loan eligibility**: Check qualification for different loan types
+- **Loan recommendations**: AI-powered product matching
+- **4 LangChain tools**: AnalyzeFinancialHealth, RecommendSavingsPlans, CheckLoanEligibility, RecommendLoans
+- **Safety guardrails**: Red flags prevent risky recommendations
+
+### 4. LangChain Agent 🆕 ✅
+- **Conversation memory**: Context retention per session
+- **Tool calling**: Automatic tool selection from 8 tools
+- **Multi-turn conversations**: Natural follow-up questions
+- **Session management**: Clear sessions, restore context
+
+### 5. Chat Interface ✅
+- Professional Streamlit UI
 - Upload documents through the UI
-- Conversation history
-- Clear, simple responses
+- Conversation history with memory
+- Real-time responses
+- Bilingual support (English/Arabic)
+- Example queries for all features
 
 ---
 
