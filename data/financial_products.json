@@ -1,0 +1,364 @@
+{
+  "savings_plans": [
+    {
+      "id": "savings_basic",
+      "name": "Basic Savings Account",
+      "name_ar": "حساب التوفير الأساسي",
+      "type": "savings",
+      "interest_rate": 0.5,
+      "min_balance": 100,
+      "monthly_fee": 0,
+      "features": [
+        "No monthly fees",
+        "ATM access",
+        "Online banking",
+        "Mobile app"
+      ],
+      "recommended_for": [
+        "emergency_fund",
+        "short_term_savings",
+        "low_income"
+      ],
+      "target_audience": "General customers with basic savings needs"
+    },
+    {
+      "id": "savings_high_yield",
+      "name": "High-Yield Savings Account",
+      "name_ar": "حساب التوفير عالي العائد",
+      "type": "savings",
+      "interest_rate": 4.5,
+      "min_balance": 5000,
+      "monthly_fee": 0,
+      "features": [
+        "4.5% APY",
+        "No monthly fees with minimum balance",
+        "Unlimited transfers",
+        "FDIC insured"
+      ],
+      "recommended_for": [
+        "emergency_fund",
+        "medium_term_savings",
+        "stable_income"
+      ],
+      "target_audience": "Customers with stable income and existing savings"
+    },
+    {
+      "id": "savings_goal",
+      "name": "Goal Saver Account",
+      "name_ar": "حساب التوفير الهدفي",
+      "type": "goal_savings",
+      "interest_rate": 3.5,
+      "min_balance": 500,
+      "monthly_fee": 0,
+      "features": [
+        "Set specific savings goals",
+        "Automatic transfers",
+        "Progress tracking",
+        "Bonus interest for consistent saving"
+      ],
+      "recommended_for": [
+        "short_term_goals",
+        "vacation",
+        "home_down_payment",
+        "wedding"
+      ],
+      "target_audience": "Customers saving for specific goals"
+    },
+    {
+      "id": "savings_retirement",
+      "name": "Retirement Savings Plan",
+      "name_ar": "خطة ادخار التقاعد",
+      "type": "retirement",
+      "interest_rate": 5.0,
+      "min_balance": 1000,
+      "monthly_fee": 0,
+      "features": [
+        "Tax advantages",
+        "Employer matching (if applicable)",
+        "Investment options",
+        "Long-term growth"
+      ],
+      "recommended_for": [
+        "retirement",
+        "long_term_savings",
+        "stable_income"
+      ],
+      "target_audience": "Customers planning for retirement"
+    },
+    {
+      "id": "savings_youth",
+      "name": "Youth Savings Account",
+      "name_ar": "حساب توفير الشباب",
+      "type": "savings",
+      "interest_rate": 2.0,
+      "min_balance": 25,
+      "monthly_fee": 0,
+      "features": [
+        "No minimum balance",
+        "Financial education resources",
+        "Parental controls",
+        "Rewards program"
+      ],
+      "recommended_for": [
+        "youth",
+        "students",
+        "first_time_saver"
+      ],
+      "target_audience": "Young customers under 25"
+    }
+  ],
+  "loan_products": [
+    {
+      "id": "loan_personal",
+      "name": "Personal Loan",
+      "name_ar": "قرض شخصي",
+      "type": "personal",
+      "interest_rate_min": 7.5,
+      "interest_rate_max": 15.0,
+      "amount_min": 1000,
+      "amount_max": 50000,
+      "term_months_min": 12,
+      "term_months_max": 60,
+      "requirements": {
+        "min_credit_score": 650,
+        "min_monthly_income": 2000,
+        "max_dti_ratio": 40,
+        "employment_months": 6
+      },
+      "features": [
+        "Fixed interest rate",
+        "No collateral required",
+        "Flexible repayment terms",
+        "Quick approval"
+      ],
+      "recommended_for": [
+        "debt_consolidation",
+        "home_improvement",
+        "medical_expenses",
+        "major_purchase"
+      ],
+      "target_audience": "Customers with stable income and good credit"
+    },
+    {
+      "id": "loan_auto",
+      "name": "Auto Loan",
+      "name_ar": "قرض السيارات",
+      "type": "auto",
+      "interest_rate_min": 4.5,
+      "interest_rate_max": 9.0,
+      "amount_min": 5000,
+      "amount_max": 75000,
+      "term_months_min": 24,
+      "term_months_max": 72,
+      "requirements": {
+        "min_credit_score": 600,
+        "min_monthly_income": 2500,
+        "max_dti_ratio": 45,
+        "down_payment_percent": 10
+      },
+      "features": [
+        "Competitive rates",
+        "New and used vehicles",
+        "Refinancing options",
+        "Gap insurance available"
+      ],
+      "recommended_for": [
+        "vehicle_purchase",
+        "auto_refinance"
+      ],
+      "target_audience": "Customers purchasing vehicles"
+    },
+    {
+      "id": "loan_home",
+      "name": "Home Mortgage",
+      "name_ar": "قرض عقاري",
+      "type": "mortgage",
+      "interest_rate_min": 3.5,
+      "interest_rate_max": 6.5,
+      "amount_min": 50000,
+      "amount_max": 500000,
+      "term_months_min": 120,
+      "term_months_max": 360,
+      "requirements": {
+        "min_credit_score": 700,
+        "min_monthly_income": 5000,
+        "max_dti_ratio": 36,
+        "down_payment_percent": 20,
+        "employment_months": 24
+      },
+      "features": [
+        "Low interest rates",
+        "Long repayment terms",
+        "Tax deductible interest",
+        "First-time buyer programs"
+      ],
+      "recommended_for": [
+        "home_purchase",
+        "refinance"
+      ],
+      "target_audience": "Qualified home buyers with stable income"
+    },
+    {
+      "id": "loan_student",
+      "name": "Student Loan",
+      "name_ar": "قرض طلابي",
+      "type": "student",
+      "interest_rate_min": 3.0,
+      "interest_rate_max": 7.0,
+      "amount_min": 1000,
+      "amount_max": 100000,
+      "term_months_min": 60,
+      "term_months_max": 240,
+      "requirements": {
+        "min_credit_score": 0,
+        "min_monthly_income": 0,
+        "max_dti_ratio": 50,
+        "enrollment_verification": true
+      },
+      "features": [
+        "Low interest rates",
+        "Deferred payments",
+        "Income-based repayment",
+        "Forgiveness programs"
+      ],
+      "recommended_for": [
+        "education",
+        "tuition",
+        "student_expenses"
+      ],
+      "target_audience": "Students and recent graduates"
+    },
+    {
+      "id": "loan_business",
+      "name": "Small Business Loan",
+      "name_ar": "قرض الأعمال الصغيرة",
+      "type": "business",
+      "interest_rate_min": 5.5,
+      "interest_rate_max": 12.0,
+      "amount_min": 5000,
+      "amount_max": 250000,
+      "term_months_min": 12,
+      "term_months_max": 120,
+      "requirements": {
+        "min_credit_score": 680,
+        "business_years": 2,
+        "min_revenue": 50000,
+        "max_dti_ratio": 35
+      },
+      "features": [
+        "Competitive rates",
+        "Flexible terms",
+        "Business advisory support",
+        "SBA loans available"
+      ],
+      "recommended_for": [
+        "business_expansion",
+        "equipment_purchase",
+        "working_capital",
+        "inventory"
+      ],
+      "target_audience": "Small business owners"
+    },
+    {
+      "id": "loan_debt_consolidation",
+      "name": "Debt Consolidation Loan",
+      "name_ar": "قرض توحيد الديون",
+      "type": "debt_consolidation",
+      "interest_rate_min": 6.0,
+      "interest_rate_max": 14.0,
+      "amount_min": 2000,
+      "amount_max": 40000,
+      "term_months_min": 24,
+      "term_months_max": 60,
+      "requirements": {
+        "min_credit_score": 640,
+        "min_monthly_income": 2500,
+        "max_dti_ratio": 50,
+        "existing_debt_min": 2000
+      },
+      "features": [
+        "Lower interest than credit cards",
+        "Single monthly payment",
+        "Fixed repayment schedule",
+        "Improve credit score"
+      ],
+      "recommended_for": [
+        "high_credit_card_debt",
+        "multiple_loans",
+        "debt_management"
+      ],
+      "target_audience": "Customers with multiple high-interest debts"
+    }
+  ],
+  "credit_cards": [
+    {
+      "id": "cc_cashback",
+      "name": "Cashback Rewards Card",
+      "name_ar": "بطاقة استرداد نقدي",
+      "type": "cashback",
+      "apr_min": 15.99,
+      "apr_max": 24.99,
+      "annual_fee": 0,
+      "credit_limit_min": 500,
+      "credit_limit_max": 25000,
+      "rewards": {
+        "cashback_rate": 2.0,
+        "categories": ["all_purchases"],
+        "bonus_categories": {
+          "groceries": 3.0,
+          "gas": 3.0
+        }
+      },
+      "requirements": {
+        "min_credit_score": 670,
+        "min_monthly_income": 1500
+      },
+      "features": [
+        "2% cashback on all purchases",
+        "3% on groceries and gas",
+        "No annual fee",
+        "Fraud protection"
+      ],
+      "recommended_for": [
+        "daily_spending",
+        "grocery_shoppers",
+        "gas_purchases"
+      ]
+    },
+    {
+      "id": "cc_travel",
+      "name": "Travel Rewards Card",
+      "name_ar": "بطاقة مكافآت السفر",
+      "type": "travel",
+      "apr_min": 16.99,
+      "apr_max": 25.99,
+      "annual_fee": 95,
+      "credit_limit_min": 2000,
+      "credit_limit_max": 50000,
+      "rewards": {
+        "points_rate": 2.0,
+        "bonus_categories": {
+          "travel": 3.0,
+          "dining": 2.0
+        },
+        "sign_up_bonus": 50000
+      },
+      "requirements": {
+        "min_credit_score": 700,
+        "min_monthly_income": 3000
+      },
+      "features": [
+        "2x points on all purchases",
+        "3x on travel",
+        "Airport lounge access",
+        "Travel insurance",
+        "No foreign transaction fees"
+      ],
+      "recommended_for": [
+        "frequent_travelers",
+        "business_travel",
+        "vacation"
+      ]
+    }
+  ]
+}

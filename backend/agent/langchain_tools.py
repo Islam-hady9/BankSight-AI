@@ -139,4 +139,12 @@ def create_banking_tools():
         ),
     ]
 
+    # Add recommendation tools if available
+    try:
+        from ..recommendations.recommendation_tools import create_recommendation_tools
+        recommendation_tools = create_recommendation_tools()
+        tools.extend(recommendation_tools)
+    except ImportError:
+        pass  # Recommendation tools not available
+
     return tools

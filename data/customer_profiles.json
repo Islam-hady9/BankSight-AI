@@ -1,0 +1,267 @@
+{
+  "customers": [
+    {
+      "id": "customer_001",
+      "name": "Sarah Johnson",
+      "age": 28,
+      "occupation": "Software Engineer",
+      "employment_status": "full_time",
+      "employment_months": 36,
+      "credit_score": 750,
+      "financial_data": {
+        "monthly_income": 8500,
+        "monthly_expenses": 5200,
+        "rent_mortgage": 1800,
+        "utilities": 200,
+        "food": 600,
+        "transportation": 400,
+        "entertainment": 500,
+        "insurance": 300,
+        "other": 1400
+      },
+      "accounts": {
+        "checking_balance": 4500,
+        "savings_balance": 15000,
+        "investment_balance": 25000
+      },
+      "debts": {
+        "credit_card_debt": 2500,
+        "student_loans": 18000,
+        "auto_loan": 0,
+        "mortgage": 0
+      },
+      "financial_goals": [
+        "buy_home",
+        "retirement_savings",
+        "emergency_fund"
+      ],
+      "risk_tolerance": "moderate",
+      "profile_summary": "Young professional with stable income, some debt, good savings habits. Ready for homeownership and long-term investments."
+    },
+    {
+      "id": "customer_002",
+      "name": "Michael Chen",
+      "age": 45,
+      "occupation": "Business Owner",
+      "employment_status": "self_employed",
+      "employment_months": 120,
+      "credit_score": 720,
+      "financial_data": {
+        "monthly_income": 12000,
+        "monthly_expenses": 8500,
+        "rent_mortgage": 2500,
+        "utilities": 350,
+        "food": 800,
+        "transportation": 600,
+        "entertainment": 400,
+        "insurance": 500,
+        "business_expenses": 2000,
+        "other": 1350
+      },
+      "accounts": {
+        "checking_balance": 8000,
+        "savings_balance": 45000,
+        "investment_balance": 150000,
+        "business_account": 35000
+      },
+      "debts": {
+        "credit_card_debt": 5000,
+        "business_loan": 50000,
+        "mortgage": 250000
+      },
+      "financial_goals": [
+        "business_expansion",
+        "retirement_planning",
+        "children_education"
+      ],
+      "risk_tolerance": "moderate_aggressive",
+      "profile_summary": "Established business owner with multiple income streams, significant assets and managed debt. Looking to expand business and plan for retirement."
+    },
+    {
+      "id": "customer_003",
+      "name": "Emily Rodriguez",
+      "age": 22,
+      "occupation": "Recent Graduate",
+      "employment_status": "full_time",
+      "employment_months": 3,
+      "credit_score": 680,
+      "financial_data": {
+        "monthly_income": 3500,
+        "monthly_expenses": 3100,
+        "rent_mortgage": 1200,
+        "utilities": 150,
+        "food": 400,
+        "transportation": 300,
+        "entertainment": 250,
+        "student_loan_payment": 450,
+        "insurance": 150,
+        "other": 200
+      },
+      "accounts": {
+        "checking_balance": 1200,
+        "savings_balance": 2500,
+        "investment_balance": 0
+      },
+      "debts": {
+        "credit_card_debt": 1800,
+        "student_loans": 45000
+      },
+      "financial_goals": [
+        "emergency_fund",
+        "pay_off_debt",
+        "save_for_car"
+      ],
+      "risk_tolerance": "conservative",
+      "profile_summary": "Recent graduate starting career with student debt and limited savings. Needs to build emergency fund and manage debt."
+    },
+    {
+      "id": "customer_004",
+      "name": "David Thompson",
+      "age": 55,
+      "occupation": "Senior Manager",
+      "employment_status": "full_time",
+      "employment_months": 180,
+      "credit_score": 800,
+      "financial_data": {
+        "monthly_income": 15000,
+        "monthly_expenses": 7000,
+        "rent_mortgage": 0,
+        "utilities": 300,
+        "food": 700,
+        "transportation": 500,
+        "entertainment": 600,
+        "insurance": 800,
+        "healthcare": 400,
+        "other": 3700
+      },
+      "accounts": {
+        "checking_balance": 12000,
+        "savings_balance": 80000,
+        "investment_balance": 450000,
+        "retirement_401k": 650000
+      },
+      "debts": {
+        "credit_card_debt": 0
+      },
+      "financial_goals": [
+        "retirement_planning",
+        "estate_planning",
+        "maximize_savings"
+      ],
+      "risk_tolerance": "conservative",
+      "profile_summary": "Senior professional nearing retirement with substantial assets and no debt. Focused on wealth preservation and retirement income."
+    },
+    {
+      "id": "customer_005",
+      "name": "Jessica Martinez",
+      "age": 32,
+      "occupation": "Teacher",
+      "employment_status": "full_time",
+      "employment_months": 60,
+      "credit_score": 690,
+      "financial_data": {
+        "monthly_income": 4500,
+        "monthly_expenses": 4200,
+        "rent_mortgage": 1500,
+        "utilities": 180,
+        "food": 500,
+        "transportation": 350,
+        "entertainment": 200,
+        "insurance": 250,
+        "childcare": 800,
+        "other": 420
+      },
+      "accounts": {
+        "checking_balance": 2000,
+        "savings_balance": 8000,
+        "investment_balance": 12000
+      },
+      "debts": {
+        "credit_card_debt": 3500,
+        "auto_loan": 12000,
+        "student_loans": 22000
+      },
+      "financial_goals": [
+        "pay_off_credit_card",
+        "children_education",
+        "emergency_fund"
+      ],
+      "risk_tolerance": "moderate",
+      "profile_summary": "Working parent with moderate income and multiple debts. Needs debt consolidation and better savings strategy."
+    },
+    {
+      "id": "customer_006",
+      "name": "James Wilson",
+      "age": 38,
+      "occupation": "Sales Manager",
+      "employment_status": "full_time",
+      "employment_months": 48,
+      "credit_score": 620,
+      "financial_data": {
+        "monthly_income": 6500,
+        "monthly_expenses": 6800,
+        "rent_mortgage": 1800,
+        "utilities": 250,
+        "food": 600,
+        "transportation": 500,
+        "entertainment": 400,
+        "insurance": 300,
+        "debt_payments": 2100,
+        "other": 850
+      },
+      "accounts": {
+        "checking_balance": 800,
+        "savings_balance": 1500,
+        "investment_balance": 0
+      },
+      "debts": {
+        "credit_card_debt": 15000,
+        "auto_loan": 18000,
+        "personal_loan": 8000
+      },
+      "financial_goals": [
+        "debt_consolidation",
+        "improve_credit_score",
+        "emergency_fund"
+      ],
+      "risk_tolerance": "conservative",
+      "profile_summary": "Customer with high debt load and expenses exceeding income. Urgent need for debt consolidation and financial counseling."
+    },
+    {
+      "id": "customer_007",
+      "name": "Amanda Lee",
+      "age": 26,
+      "occupation": "Graphic Designer",
+      "employment_status": "freelance",
+      "employment_months": 24,
+      "credit_score": 710,
+      "financial_data": {
+        "monthly_income": 5000,
+        "monthly_expenses": 3800,
+        "rent_mortgage": 1400,
+        "utilities": 150,
+        "food": 450,
+        "transportation": 200,
+        "entertainment": 300,
+        "insurance": 200,
+        "business_expenses": 600,
+        "other": 500
+      },
+      "accounts": {
+        "checking_balance": 3500,
+        "savings_balance": 12000,
+        "investment_balance": 8000
+      },
+      "debts": {
+        "credit_card_debt": 2000
+      },
+      "financial_goals": [
+        "income_stability",
+        "retirement_savings",
+        "business_growth"
+      ],
+      "risk_tolerance": "moderate",
+      "profile_summary": "Freelancer with variable income and good savings habits. Needs income stability planning and retirement account."
+    }
+  ]
+}
