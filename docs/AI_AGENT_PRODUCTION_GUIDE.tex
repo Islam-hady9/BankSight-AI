@@ -1,0 +1,938 @@
+\documentclass[11pt,a4paper]{report}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Colors
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{linkcolor}{rgb}{0,0.4,0.8}
+
+% Code listing style
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=linkcolor,
+    filecolor=magenta,
+    urlcolor=linkcolor,
+    pdftitle={AI Agent Production Deployment Guide},
+    pdfpagemode=FullScreen,
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{AI Agent Production Deployment Guide}
+\lhead{Version 1.0.0}
+\rfoot{Page \thepage}
+
+% Title formatting
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries\color{blue!70!black}}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titleformat{\section}
+{\normalfont\Large\bfseries\color{blue!60!black}}{\thesection}{1em}{}
+\titleformat{\subsection}
+{\normalfont\large\bfseries\color{blue!50!black}}{\thesubsection}{1em}{}
+
+% Document information
+\title{
+    {\Huge\textbf{AI Agent Production Deployment \& Cost Analysis Guide}}\\
+    \vspace{1cm}
+    {\Large A Comprehensive Framework for Deploying LLM-Based Agents at Scale}
+}
+\author{AI Engineering Team}
+\date{November 2025\\Version 1.0.0}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Executive Summary}
+
+\section{The Core Question}
+
+\textbf{"How much does it cost to run an LLM-based AI agent for production users?"}
+
+This guide provides a comprehensive framework for answering this question, applicable to any LLM agent project across different scales, cloud providers, and use cases.
+
+\section{Key Findings}
+
+\subsection{Cost Comparison (100 Concurrent Users, 60,000 queries/month)}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lrrrcc@{}}
+\toprule
+\textbf{Approach} & \textbf{Monthly} & \textbf{Annual} & \textbf{3-Year TCO} & \textbf{Quality} & \textbf{Privacy} \\
+\midrule
+\textbf{Open-Source (GPU)} & \$1,500-\$2,500 & \$18K-\$30K & \$54K-\$90K & 80-90/100 & \checkmark \\
+OpenAI GPT-4 API & \$2,000-\$2,500 & \$24K-\$30K & \$72K-\$90K & 95/100 & $\times$ \\
+OpenAI GPT-3.5 API & \$50-\$600 & \$600-\$7.2K & \$1.8K-\$21.6K & 75-80/100 & $\times$ \\
+Hybrid (Both) & \$1,800-\$3,000 & \$21.6K-\$36K & \$64.8K-\$108K & 85-95/100 & $\sim$ \\
+\bottomrule
+\end{tabular}
+\caption{Cost comparison across deployment approaches}
+\end{table}
+
+\section{Decision Rules}
+
+\subsection{Choose Open-Source LLMs When:}
+
+\begin{itemize}[leftmargin=*]
+    \item Data privacy is critical (healthcare, finance, government)
+    \item Long-term deployment ($>1$ year)
+    \item High query volume ($>50,000$/month)
+    \item Need for customization/fine-tuning
+    \item Predictable budget requirements
+\end{itemize}
+
+\subsection{Choose API-Based LLMs When:}
+
+\begin{itemize}[leftmargin=*]
+    \item Quick prototyping or MVP
+    \item Low query volume ($<10,000$/month)
+    \item Limited ML/DevOps expertise
+    \item Need for absolute best quality
+    \item Short-term projects ($<6$ months)
+\end{itemize}
+
+\chapter{Introduction}
+
+\section{What is an LLM-Based Agent?}
+
+An \textbf{LLM-based agent} is a software system that uses Large Language Models to:
+
+\begin{itemize}[leftmargin=*]
+    \item Understand natural language queries
+    \item Generate human-like responses
+    \item Perform actions based on instructions
+    \item Maintain conversation context
+    \item Integrate with external systems (RAG, tools, APIs)
+\end{itemize}
+
+\subsection{Common Use Cases}
+
+\begin{itemize}[leftmargin=*]
+    \item Customer support chatbots
+    \item Virtual assistants
+    \item Document Q\&A systems
+    \item Code generation tools
+    \item Content creation platforms
+\end{itemize}
+
+\section{The Cost Challenge}
+
+Unlike traditional software, LLM agents have \textbf{variable operational costs} based on:
+
+\begin{itemize}[leftmargin=*]
+    \item Number of users
+    \item Query frequency
+    \item Model size and quality
+    \item Response length
+    \item Infrastructure choice
+\end{itemize}
+
+This guide helps you \textbf{estimate, optimize, and plan} these costs.
+
+\chapter{Architecture Patterns}
+
+\section{Pattern 1: Self-Hosted Open-Source LLM}
+
+\begin{verbatim}
+User → Load Balancer → Application Servers (with GPU) → Vector DB
+                              ↓
+                         LLM Model (7B-70B parameters)
+\end{verbatim}
+
+\textbf{Characteristics:}
+\begin{itemize}[leftmargin=*]
+    \item Fixed infrastructure costs
+    \item Complete control
+    \item One-time model download
+    \item Requires ML expertise
+\end{itemize}
+
+\textbf{Best for:} High-volume, privacy-sensitive applications
+
+\section{Pattern 2: API-Based LLM}
+
+\begin{verbatim}
+User → Load Balancer → Application Servers → Vector DB
+                              ↓
+                   External API (OpenAI, Anthropic)
+\end{verbatim}
+
+\textbf{Characteristics:}
+\begin{itemize}[leftmargin=*]
+    \item Pay-per-use pricing
+    \item No infrastructure for LLM
+    \item Instant access to best models
+    \item Variable costs
+\end{itemize}
+
+\textbf{Best for:} MVP, low-volume, or quality-critical applications
+
+\section{Pattern 3: Hybrid Approach}
+
+\begin{verbatim}
+User → Load Balancer → Application Servers → Vector DB
+                              ↓
+                    ┌─────────┴─────────┐
+                    ↓                   ↓
+            Local LLM (80%)      API (20%)
+            (simple queries)  (complex queries)
+\end{verbatim}
+
+\textbf{Characteristics:}
+\begin{itemize}[leftmargin=*]
+    \item Optimized cost/quality
+    \item Fallback mechanism
+    \item Complexity in routing
+    \item Best of both worlds
+\end{itemize}
+
+\textbf{Best for:} Production apps with mixed complexity queries
+
+\chapter{Infrastructure Options}
+
+\section{Cloud Provider Comparison - GPU Instances}
+
+\begin{longtable}{@{}llllrr@{}}
+\caption{GPU instances for open-source LLMs (Nov 2025 pricing)} \\
+\toprule
+\textbf{Provider} & \textbf{Instance Type} & \textbf{GPU} & \textbf{vCPU} & \textbf{Price/hr} & \textbf{Monthly} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Provider} & \textbf{Instance Type} & \textbf{GPU} & \textbf{vCPU} & \textbf{Price/hr} & \textbf{Monthly} \\
+\midrule
+\endhead
+AWS & g4dn.xlarge & T4 16GB & 4 & \$0.526 & \$384 \\
+AWS & g4dn.2xlarge & T4 16GB & 8 & \$0.752 & \$549 \\
+AWS & g5.xlarge & A10G 24GB & 4 & \$1.006 & \$734 \\
+Azure & NC4as\_T4\_v3 & T4 16GB & 4 & \$0.526 & \$384 \\
+Azure & NC6s\_v3 & V100 16GB & 6 & \$3.06 & \$2,234 \\
+GCP & n1-standard-4+T4 & T4 16GB & 4 & \$0.65 & \$475 \\
+Alibaba & ecs.gn6v-c8g1.2xlarge & T4 16GB & 8 & \$0.85 & \$621 \\
+\bottomrule
+\end{longtable}
+
+\textit{Note: Reserved instances offer 30-50\% discounts.}
+
+\section{Model Size vs Hardware Requirements}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lllll@{}}
+\toprule
+\textbf{Model Size} & \textbf{Parameters} & \textbf{VRAM} & \textbf{GPU} & \textbf{Speed (tok/s)} \\
+\midrule
+Tiny & 1-3B & 4-8GB & T4, RTX 3060 & 50-100 \\
+Small & 7-8B & 14-16GB & T4, A10G & 30-50 \\
+Medium & 13-20B & 26-40GB & V100, A100 & 15-30 \\
+Large & 30-40B & 60-80GB & 2× A100 40GB & 10-20 \\
+X-Large & 70B+ & 140GB+ & 4× A100 40GB & 5-10 \\
+\bottomrule
+\end{tabular}
+\caption{Hardware requirements by model size}
+\end{table}
+
+\textbf{Note:} Quantization (8-bit or 4-bit) reduces VRAM by 50-75\% with minimal quality loss.
+
+\chapter{Cost Models}
+
+\section{Model A: Open-Source LLM (Self-Hosted)}
+
+\subsection{Cost Components}
+
+\[
+\text{Total Cost} = \text{Infrastructure} + \text{Operations} + \text{One-Time Setup}
+\]
+
+\textbf{Infrastructure:}
+\begin{itemize}[leftmargin=*]
+    \item GPU Instances (scale with users)
+    \item Load Balancer
+    \item Storage (model cache, vector DB)
+    \item Bandwidth
+    \item Backup \& Monitoring
+\end{itemize}
+
+\textbf{Operations:}
+\begin{itemize}[leftmargin=*]
+    \item DevOps Engineer (10-40\% time)
+    \item On-call Support
+    \item Model Updates
+    \item Security Audits
+\end{itemize}
+
+\subsection{Example Calculation (100 Users, 7B Model)}
+
+\textbf{Infrastructure (Monthly):}
+
+\begin{align*}
+\text{3× GPU instances (T4 16GB):} &\quad 3 \times \$550 = \$1,650 \\
+\text{1× Vector DB instance:} &\quad \$110 \\
+\text{Load Balancer:} &\quad \$25 \\
+\text{Storage (500GB):} &\quad \$15 \\
+\text{Bandwidth (100 Mbps):} &\quad \$60 \\
+\text{Backups \& Monitoring:} &\quad \$40 \\
+\cline{1-2}
+\textbf{Subtotal:} &\quad \mathbf{\$1,900}
+\end{align*}
+
+\textbf{Operations (Monthly):}
+
+\begin{align*}
+\text{DevOps (20\% full-time):} &\quad \$500 \\
+\text{On-call support:} &\quad \$200 \\
+\text{Maintenance:} &\quad \$100 \\
+\cline{1-2}
+\textbf{Subtotal:} &\quad \mathbf{\$800}
+\end{align*}
+
+\textbf{Total: \$2,700/month = \$32,400/year}
+
+\textbf{With 1-year reserved instances (-30\%):}
+
+\textbf{Total: \$1,890/month = \$22,680/year}
+
+\section{Model B: API-Based (OpenAI, Anthropic)}
+
+\subsection{Pricing Structure (OpenAI Example)}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Model} & \textbf{Input} & \textbf{Output} & \textbf{Context} \\
+\midrule
+GPT-4 & \$0.03/1K tok & \$0.06/1K tok & 128K \\
+GPT-4 Turbo & \$0.01/1K tok & \$0.03/1K tok & 128K \\
+GPT-3.5-Turbo & \$0.0005/1K tok & \$0.0015/1K tok & 16K \\
+\bottomrule
+\end{tabular}
+\caption{OpenAI API pricing (Nov 2025)}
+\end{table}
+
+\subsection{Example Calculation (100 Users)}
+
+\textbf{Usage Assumptions:}
+
+\begin{itemize}[leftmargin=*]
+    \item Users: 100 concurrent
+    \item Queries per user per day: 20
+    \item Total monthly queries: 60,000
+    \item Average query: 500 tokens input + 300 tokens output = 800 tokens total
+    \item Monthly tokens: 30M input + 18M output
+\end{itemize}
+
+\textbf{GPT-4 Cost:}
+
+\begin{align*}
+\text{Input:} &\quad 30M \times \$0.03/1K = \$900 \\
+\text{Output:} &\quad 18M \times \$0.06/1K = \$1,080 \\
+\cline{1-2}
+\text{API Total:} &\quad \$1,980/\text{month} \\
+\text{Infrastructure:} &\quad \$300/\text{month} \\
+\text{Operations:} &\quad \$200/\text{month} \\
+\cline{1-2}
+\textbf{Total:} &\quad \mathbf{\$2,480/\text{month} = \$29,760/\text{year}}
+\end{align*}
+
+\textbf{GPT-3.5-Turbo Cost:}
+
+\begin{align*}
+\text{Input:} &\quad 30M \times \$0.0005/1K = \$15 \\
+\text{Output:} &\quad 18M \times \$0.0015/1K = \$27 \\
+\cline{1-2}
+\text{API Total:} &\quad \$42/\text{month} \\
+\text{Infrastructure:} &\quad \$300/\text{month} \\
+\text{Operations:} &\quad \$200/\text{month} \\
+\cline{1-2}
+\textbf{Total:} &\quad \mathbf{\$542/\text{month} = \$6,504/\text{year}}
+\end{align*}
+
+\chapter{Cost Calculation Framework}
+
+\section{Universal Cost Formula}
+
+\begin{lstlisting}[language=Python, caption=Cost calculation function]
+def calculate_monthly_cost(
+    users: int,
+    queries_per_user_per_day: int,
+    avg_tokens_per_query: int,
+    deployment_type: str,  # "open_source" or "api"
+    model_type: str,       # "7B", "13B", "70B" or "gpt-4"
+    cloud_provider: str    # "aws", "azure", "gcp", "alibaba"
+) -> float:
+
+    total_monthly_queries = users * queries_per_user_per_day * 30
+
+    if deployment_type == "open_source":
+        gpu_instances = calculate_gpu_instances(users, model_type)
+        hourly_cost = get_gpu_hourly_cost(cloud_provider, model_type)
+
+        infrastructure = gpu_instances * hourly_cost * 730
+        operations = 500 + (gpu_instances * 200)
+
+        return infrastructure + operations
+
+    elif deployment_type == "api":
+        monthly_tokens = total_monthly_queries * avg_tokens_per_query
+        api_cost = calculate_api_cost(model_type, monthly_tokens)
+        infrastructure = 300
+        operations = 200
+
+        return api_cost + infrastructure + operations
+\end{lstlisting}
+
+\section{Scaling Calculator}
+
+\begin{longtable}{@{}rrrrrr@{}}
+\caption{Cost scaling by user count} \\
+\toprule
+\textbf{Users} & \textbf{Queries/Mo} & \textbf{GPUs} & \textbf{Open-Source} & \textbf{GPT-4} & \textbf{GPT-3.5} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Users} & \textbf{Queries/Mo} & \textbf{GPUs} & \textbf{Open-Source} & \textbf{GPT-4} & \textbf{GPT-3.5} \\
+\midrule
+\endhead
+10 & 6,000 & 1 & \$850 & \$248 & \$54 \\
+50 & 30,000 & 2 & \$1,700 & \$1,240 & \$271 \\
+100 & 60,000 & 3 & \$2,700 & \$2,480 & \$542 \\
+500 & 300,000 & 8 & \$8,500 & \$12,400 & \$2,710 \\
+1,000 & 600,000 & 15 & \$15,500 & \$24,800 & \$5,420 \\
+10,000 & 6,000,000 & 100 & \$110,000 & \$248,000 & \$54,200 \\
+\bottomrule
+\end{longtable}
+
+\textbf{Key Insight:} Open-source becomes dramatically cheaper at scale ($>500$ users).
+
+\section{Break-Even Analysis}
+
+The break-even point is when open-source infrastructure costs equal API costs:
+
+\[
+\text{Break-even} = \frac{\text{Infrastructure Fixed Cost}}{\text{Monthly Savings}}
+\]
+
+\subsection{Break-Even Examples}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{At 100 users:} Open-source (\$2,700) vs GPT-4 (\$2,480) - GPT-4 slightly cheaper
+    \item \textbf{At 500 users:} Open-source (\$8,500) vs GPT-4 (\$12,400) - \textbf{46\% savings}
+    \item \textbf{At 1,000 users:} Open-source (\$15,500) vs GPT-4 (\$24,800) - \textbf{60\% savings}
+\end{itemize}
+
+\textbf{Rule of Thumb:}
+\begin{itemize}[leftmargin=*]
+    \item $<50$ users: Use APIs (lower entry cost)
+    \item 50-100 users: Break-even zone (depends on usage)
+    \item $>100$ users: Open-source becomes economical
+    \item $>500$ users: Open-source is significantly cheaper
+\end{itemize}
+
+\chapter{Quality vs Cost Analysis}
+
+\section{Model Quality Comparison}
+
+\begin{longtable}{@{}lrrrrrl@{}}
+\caption{Benchmark scores across model types} \\
+\toprule
+\textbf{Model} & \textbf{Overall} & \textbf{Reason} & \textbf{Code} & \textbf{Math} & \textbf{Creative} & \textbf{Cost Tier} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Model} & \textbf{Overall} & \textbf{Reason} & \textbf{Code} & \textbf{Math} & \textbf{Creative} & \textbf{Cost Tier} \\
+\midrule
+\endhead
+GPT-4 & 95/100 & Exc & Exc & Exc & Exc & High \\
+Claude 3 Opus & 94/100 & Exc & Exc & Exc & Exc & High \\
+GPT-4 Turbo & 93/100 & Exc & Exc & Exc & V.Good & Medium \\
+Claude 3 Sonnet & 88/100 & V.Good & V.Good & V.Good & V.Good & Medium \\
+Mixtral 8x7B & 87/100 & V.Good & V.Good & Good & V.Good & Low \\
+Llama 3 70B & 86/100 & V.Good & V.Good & Good & V.Good & Low \\
+Mistral 7B & 84/100 & Good & Good & Good & Good & V.Low \\
+Llama 3 8B & 82/100 & Good & Good & Fair & Good & V.Low \\
+GPT-3.5-Turbo & 78/100 & Good & Good & Fair & Good & V.Low \\
+Phi-3-mini & 72/100 & Fair & Fair & Fair & Fair & Ultra Low \\
+\bottomrule
+\end{longtable}
+
+\section{Quality-Adjusted Cost Analysis}
+
+\textbf{Cost per Quality Point (Annual, 100 users):}
+
+\begin{align*}
+\text{GPT-4:} &\quad \$30,000 / 95 = \$316 \text{ per quality point} \\
+\text{Claude Opus:} &\quad \$32,000 / 94 = \$340 \text{ per quality point} \\
+\text{Mixtral 8x7B:} &\quad \$28,000 / 87 = \$322 \text{ per quality point} \\
+\text{Mistral 7B:} &\quad \$23,000 / 84 = \$274 \text{ per quality point} \quad \checkmark \text{ \textbf{Best value}} \\
+\text{GPT-3.5-Turbo:} &\quad \$6,500 / 78 = \$83 \text{ per quality point} \quad \checkmark \text{ \textbf{Ultra budget}}
+\end{align*}
+
+\chapter{Scaling Strategies}
+
+\section{Horizontal Scaling (More Instances)}
+
+\textbf{Approach:} Add more GPU servers as users increase
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{User Range} & \textbf{GPU Instances} \\
+\midrule
+1-50 users & 1 instance \\
+50-150 users & 2 instances \\
+150-300 users & 3 instances \\
+300-500 users & 5 instances \\
+500-1000 users & 8-10 instances \\
+\bottomrule
+\end{tabular}
+\caption{Horizontal scaling guidelines}
+\end{table}
+
+\textbf{Pros:}
+\begin{itemize}[leftmargin=*]
+    \item Predictable scaling
+    \item High availability (redundancy)
+    \item Easy load balancing
+\end{itemize}
+
+\textbf{Cons:}
+\begin{itemize}[leftmargin=*]
+    \item Higher fixed costs
+    \item More complex deployment
+    \item Increased operational overhead
+\end{itemize}
+
+\section{Vertical Scaling (Bigger Instances)}
+
+\textbf{Approach:} Upgrade to more powerful GPUs
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{GPU Type} & \textbf{Monthly Cost} \\
+\midrule
+T4 16GB & \$550 \\
+V100 32GB & \$2,200 \\
+A100 40GB & \$3,000 \\
+A100 80GB & \$5,000 \\
+\bottomrule
+\end{tabular}
+\caption{Vertical scaling options}
+\end{table}
+
+\textbf{Pros:}
+\begin{itemize}[leftmargin=*]
+    \item Simpler architecture
+    \item Lower network overhead
+    \item Can handle larger models
+\end{itemize}
+
+\textbf{Cons:}
+\begin{itemize}[leftmargin=*]
+    \item Single point of failure
+    \item Limited by hardware ceiling
+    \item More expensive per user at low scale
+\end{itemize}
+
+\section{Model Scaling (Tiered Models)}
+
+\textbf{Approach:} Route queries to appropriate model based on complexity
+
+\begin{lstlisting}[language=Python, caption=Multi-model routing]
+def route_query(query, complexity):
+    if complexity == "simple":
+        return small_model_7b    # 70% of queries
+    elif complexity == "medium":
+        return medium_model_13b  # 20% of queries
+    else:
+        return large_model_70b   # 10% of queries
+\end{lstlisting}
+
+\textbf{Benefits:}
+\begin{itemize}[leftmargin=*]
+    \item Optimize cost by using smaller models when possible
+    \item Reserve expensive models for complex queries
+    \item 30-50\% cost reduction with minimal quality impact
+\end{itemize}
+
+\section{Hybrid Scaling (Open-Source + API)}
+
+\textbf{Approach:} Use local models for most queries, API for exceptions
+
+\begin{lstlisting}[language=Python, caption=Hybrid fallback strategy]
+def handle_query(query):
+    # Try local model first
+    response = local_model.generate(query)
+
+    # Check confidence score
+    if confidence(response) < 0.7:
+        # Fallback to API for better quality
+        response = api_model.generate(query)
+
+    return response
+\end{lstlisting}
+
+\textbf{Cost Impact:}
+\begin{itemize}[leftmargin=*]
+    \item 80\% queries $\rightarrow$ Local model: \$2,000/month
+    \item 20\% queries $\rightarrow$ API fallback: \$500/month
+    \item Total: \$2,500/month
+    \item Benefit: Best quality + acceptable cost
+\end{itemize}
+
+\chapter{Decision Framework}
+
+\section{Decision Tree}
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Is data privacy critical?} (healthcare, finance, government)
+    \begin{itemize}
+        \item YES $\rightarrow$ Use Open-Source (mandatory for compliance)
+        \item NO $\rightarrow$ Continue
+    \end{itemize}
+
+    \item \textbf{Query volume per month?}
+    \begin{itemize}
+        \item $<10,000$ $\rightarrow$ Use API (lower entry cost)
+        \item 10,000-50,000 $\rightarrow$ Evaluate both options
+        \item $>50,000$ $\rightarrow$ Use Open-Source (better economics)
+    \end{itemize}
+
+    \item \textbf{Project timeline?}
+    \begin{itemize}
+        \item $<3$ months $\rightarrow$ Use API (faster to market)
+        \item 3-12 months $\rightarrow$ Hybrid (start API, migrate)
+        \item $>12$ months $\rightarrow$ Use Open-Source (long-term savings)
+    \end{itemize}
+
+    \item \textbf{Quality requirements?}
+    \begin{itemize}
+        \item Must be best $\rightarrow$ Use GPT-4/Claude
+        \item Very good is okay $\rightarrow$ Use Mistral/Llama
+        \item Good enough $\rightarrow$ Use GPT-3.5
+    \end{itemize}
+
+    \item \textbf{Team expertise?}
+    \begin{itemize}
+        \item No ML experience $\rightarrow$ Use API (easier)
+        \item Some ML knowledge $\rightarrow$ Hybrid approach
+        \item Strong ML team $\rightarrow$ Use Open-Source
+    \end{itemize}
+\end{enumerate}
+
+\section{Common Scenarios}
+
+\subsection{Scenario 1: Early-Stage Startup (MVP)}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Users:} 50
+    \item \textbf{Budget:} \$5,000/month
+    \item \textbf{Timeline:} 3 months
+    \item \textbf{Team:} 2 engineers (no ML experience)
+\end{itemize}
+
+\textbf{Recommendation:} GPT-3.5-Turbo API
+
+\textbf{Cost:} $\sim$\$300/month
+
+\textbf{Rationale:} Fast to market, minimal setup, low risk
+
+\subsection{Scenario 2: Healthcare Application}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Users:} 200
+    \item \textbf{Budget:} \$15,000/month
+    \item \textbf{Data:} HIPAA-compliant
+    \item \textbf{Timeline:} 6 months
+    \item \textbf{Team:} 5 engineers (1 ML expert)
+\end{itemize}
+
+\textbf{Recommendation:} Self-hosted Llama 3 70B
+
+\textbf{Cost:} $\sim$\$5,000/month
+
+\textbf{Rationale:} Data privacy mandatory, sufficient budget, long-term project
+
+\subsection{Scenario 3: Enterprise Customer Support}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Users:} 1,000
+    \item \textbf{Budget:} \$50,000/month
+    \item \textbf{Quality:} High priority
+    \item \textbf{Timeline:} 12 months
+    \item \textbf{Team:} 10 engineers (3 ML experts)
+\end{itemize}
+
+\textbf{Recommendation:} Hybrid (Mistral 7B + GPT-4 fallback)
+
+\textbf{Cost:} $\sim$\$18,000/month
+
+\textbf{Rationale:} Cost-effective at scale, best quality when needed
+
+\chapter{Best Practices}
+
+\section{Infrastructure Best Practices}
+
+\subsection{Use Reserved Instances}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Savings:} 30-50\% for 1-3 year commitments
+    \item \textbf{Example:} \$2,000/month $\rightarrow$ \$1,400 (1-year) $\rightarrow$ \$1,000 (3-year)
+    \item \textbf{When:} Predictable usage for $>6$ months
+\end{itemize}
+
+\subsection{Implement Caching}
+
+\begin{lstlisting}[language=Python, caption=Response caching]
+# Cache frequent queries
+cache_hit_rate = 0.30-0.40  # Typical for customer support
+cost_reduction = cache_hit_rate * compute_cost
+# Example: 40% hit rate = 40% reduction in compute
+\end{lstlisting}
+
+\subsection{Use Auto-Scaling}
+
+\begin{lstlisting}[language=yaml, caption=Auto-scaling configuration]
+min_instances: 2
+max_instances: 10
+scale_up_threshold: 75% GPU utilization
+scale_down_threshold: 30% GPU utilization
+\end{lstlisting}
+
+\section{Cost Optimization Strategies}
+
+\subsection{Query Batching}
+
+\begin{itemize}[leftmargin=*]
+    \item Single query: 100ms compute
+    \item Batched (10 queries): 150ms compute
+    \item Efficiency: 15ms per query (85\% savings)
+\end{itemize}
+
+\subsection{Smart Routing}
+
+\begin{lstlisting}[language=Python, caption=Cost-aware routing]
+def route_query(query):
+    if is_faq(query):
+        return cached_response  # $0
+    elif is_simple(query):
+        return small_model      # $0.001
+    else:
+        return large_model      # $0.01
+\end{lstlisting}
+
+\subsection{Context Window Management}
+
+\begin{lstlisting}[language=Python, caption=Optimize context usage]
+# Don't send entire conversation history
+max_context_tokens = 2000  # vs 8000
+cost_reduction = 0.75  # 75% reduction
+\end{lstlisting}
+
+\section{Monitoring \& Alerting}
+
+\textbf{Key Metrics to Track:}
+
+\begin{enumerate}[leftmargin=*]
+    \item Cost per query
+    \item Average response time
+    \item Model quality (user satisfaction)
+    \item GPU utilization
+    \item Cache hit rate
+    \item Error rate
+    \item API quota usage (if hybrid)
+\end{enumerate}
+
+\textbf{Alert Thresholds:}
+
+\begin{itemize}[leftmargin=*]
+    \item Cost per query $>$\$0.05 $\rightarrow$ investigate inefficiency
+    \item GPU utilization $>85\%$ $\rightarrow$ scale up
+    \item GPU utilization $<30\%$ for 2h $\rightarrow$ scale down
+    \item Error rate $>1\%$ $\rightarrow$ check model health
+    \item API rate limit $>80\%$ $\rightarrow$ upgrade tier
+\end{itemize}
+
+\chapter{Conclusion}
+
+\section{Key Takeaways}
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{No One-Size-Fits-All Solution}
+    \begin{itemize}
+        \item Small scale ($<100$ users): APIs often cheaper
+        \item Large scale ($>500$ users): Self-hosted more economical
+        \item Hybrid: Best quality-cost balance for many scenarios
+    \end{itemize}
+
+    \item \textbf{Cost Scales Differently}
+    \begin{itemize}
+        \item APIs: Linear with usage (predictable per query)
+        \item Self-hosted: Stepped with scale (fixed + marginal)
+        \item Crossover point: 50-200 users typically
+    \end{itemize}
+
+    \item \textbf{Quality vs Cost Trade-off}
+    \begin{itemize}
+        \item Premium models (GPT-4): 20\% better, 2-4× more expensive
+        \item Mid-tier (Mistral): 90\% quality, 30-50\% cheaper
+        \item Budget (GPT-3.5): 80\% quality, 90\% cheaper
+    \end{itemize}
+
+    \item \textbf{Non-Cost Factors Often Decide}
+    \begin{itemize}
+        \item Data privacy requirements
+        \item Compliance needs
+        \item Team expertise
+        \item Time to market
+    \end{itemize}
+\end{enumerate}
+
+\section{Recommended Approach for New Projects}
+
+\subsection{Phase 1: Start with API (Months 1-3)}
+
+\begin{itemize}[leftmargin=*]
+    \item Quick validation
+    \item Learn usage patterns
+    \item Collect data for potential fine-tuning
+    \item \textbf{Cost:} \$500-2,000/month
+\end{itemize}
+
+\subsection{Phase 2: Evaluate Migration (Months 4-6)}
+
+\begin{itemize}[leftmargin=*]
+    \item Calculate break-even point
+    \item Test open-source models
+    \item Compare quality metrics
+    \item \textbf{Decision:} Migrate or stay with API
+\end{itemize}
+
+\subsection{Phase 3: Optimize (Months 7+)}
+
+\begin{itemize}[leftmargin=*]
+    \item Fine-tune models on your data
+    \item Implement hybrid if beneficial
+    \item Continuous cost monitoring
+    \item \textbf{Cost:} Optimized for your scale
+\end{itemize}
+
+\section{Final Recommendations by Organization Size}
+
+\subsection{Startup ($<50$ users)}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Approach:} GPT-3.5-Turbo or Claude Haiku
+    \item \textbf{Cost:} \$300-500/month
+    \item \textbf{Focus:} Product-market fit, not infrastructure
+\end{itemize}
+
+\subsection{Growth Stage (50-500 users)}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Approach:} Hybrid (self-hosted + API fallback)
+    \item \textbf{Cost:} \$2,000-8,000/month
+    \item \textbf{Focus:} Balance cost optimization with quality
+\end{itemize}
+
+\subsection{Enterprise ($>500$ users)}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Approach:} Self-hosted with fine-tuning
+    \item \textbf{Cost:} \$8,000-50,000/month
+    \item \textbf{Focus:} Full control, best economics at scale
+\end{itemize}
+
+\chapter{Additional Resources}
+
+\section{Cost Calculators}
+
+\begin{itemize}[leftmargin=*]
+    \item AWS Pricing Calculator: \url{https://calculator.aws}
+    \item Azure Pricing Calculator: \url{https://azure.microsoft.com/pricing/calculator}
+    \item GCP Pricing Calculator: \url{https://cloud.google.com/products/calculator}
+    \item OpenAI API Pricing: \url{https://openai.com/pricing}
+    \item Anthropic Pricing: \url{https://anthropic.com/pricing}
+\end{itemize}
+
+\section{Open-Source Models}
+
+\begin{itemize}[leftmargin=*]
+    \item Hugging Face Model Hub: \url{https://huggingface.co/models}
+    \item Ollama (local deployment): \url{https://ollama.ai}
+    \item vLLM (efficient serving): \url{https://github.com/vllm-project/vllm}
+\end{itemize}
+
+\section{Benchmarks}
+
+\begin{itemize}[leftmargin=*]
+    \item LLM Leaderboard: \url{https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard}
+    \item Chatbot Arena: \url{https://chat.lmsys.org}
+\end{itemize}
+
+\vspace{2cm}
+
+\begin{center}
+\rule{\textwidth}{0.4pt}
+\vspace{0.5cm}
+
+\textbf{\Large Remember:} The best solution depends on your specific requirements.\\
+Use this framework as a starting point, but always validate with your own testing.
+
+\vspace{0.5cm}
+
+\textbf{Good luck with your LLM agent deployment!}
+
+\vspace{0.5cm}
+
+\textit{Last Updated: November 2025}\\
+\textit{Version 1.0.0}
+\end{center}
+
+\end{document}

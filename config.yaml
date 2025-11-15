@@ -1,0 +1,128 @@
+# BankSight-AI Configuration
+
+# Backend Settings
+backend:
+  host: "0.0.0.0"
+  port: 8000
+  reload: true  # Auto-reload on code changes
+
+# Frontend Settings
+frontend:
+  host: "localhost"
+  port: 8501
+  backend_url: "http://localhost:8000"
+  page_title: "BankSight AI"
+  page_icon: "🏦"
+
+# LLM Settings
+llm:
+  # ==========================================
+  # LLM PROVIDER SELECTION
+  # ==========================================
+  # Options: "groq" (fast cloud API) or "huggingface" (local GPU inference)
+  provider: "groq"  # Change to "huggingface" for local inference
+
+  # ==========================================
+  # GROQ API SETTINGS (Fast Cloud Inference)
+  # ==========================================
+  groq:
+    model_name: "moonshotai/kimi-k2-instruct-0905"  # Fast reasoning model
+    # Other available models:
+    # - "llama-3.3-70b-versatile" (very powerful)
+    # - "llama-3.1-8b-instant" (fastest)
+    # - "mixtral-8x7b-32768" (long context)
+    max_tokens: 4096
+    temperature: 0.6
+    top_p: 1.0
+    stream: false  # Set to true for streaming responses
+    timeout: 30  # API timeout in seconds
+
+  # ==========================================
+  # HUGGINGFACE LOCAL SETTINGS (GPU Inference)
+  # ==========================================
+  # MODEL RECOMMENDATIONS FOR RTX 4060 Ti (16GB VRAM)
+
+  # 🏆 BEST QUALITY (Recommended for RTX 4060 Ti):
+  # - "mistralai/Mistral-7B-Instruct-v0.3" (7B, excellent quality, ~14GB VRAM)
+  # - "meta-llama/Meta-Llama-3-8B-Instruct" (8B, very good, ~16GB VRAM)
+  # - "google/gemma-2-9b-it" (9B, great reasoning, ~18GB VRAM with 8-bit)
+
+  # ⚡ FASTER OPTIONS (if speed is priority):
+  # - "microsoft/Phi-3-mini-4k-instruct" (3.8B, fast, ~8GB VRAM)
+  # - "microsoft/Phi-3-small-8k-instruct" (7B, good balance)
+
+  # 🚀 ADVANCED (with 8-bit quantization):
+  # - "mistralai/Mistral-Nemo-Instruct-2407" (12B, very powerful)
+  # - "meta-llama/Meta-Llama-3.1-8B-Instruct" (latest Llama)
+  # - "Qwen/Qwen2-7B-Instruct" (excellent for reasoning)
+
+  # ⚠️  NOTE: Llama models may require HuggingFace access approval
+
+  huggingface:
+    model_name: "mistralai/Mistral-7B-Instruct-v0.3"
+    max_new_tokens: 1000
+    temperature: 0.7
+    top_p: 0.9
+    device: "auto"  # Options: "auto", "cuda", "cpu"
+    torch_dtype: "auto"  # Options: "auto", "float16", "bfloat16"
+    cache_dir: "./models"  # Download models here
+
+    # Quantization (Reduces VRAM usage)
+    # For RTX 4060 Ti 16GB: Usually not needed for 7B-8B models
+    # Enable for larger models (12B+) or to save VRAM
+    load_in_8bit: false    # Halves VRAM usage, slight quality loss
+    load_in_4bit: false    # Quarters VRAM usage, more quality loss (needs bitsandbytes)
+
+# Embeddings Settings
+embeddings:
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  dimension: 384
+  device: "cuda"  # Use GPU for fast embedding generation (falls back to CPU if no GPU)
+
+# Vector Store Settings
+vector_store:
+  type: "chromadb"
+  path: "./data/vector_db"
+  collection_name: "banking_documents"
+
+# RAG Settings
+rag:
+  chunk_size: 500
+  chunk_overlap: 50
+  max_chunks_per_doc: 1000
+  top_k: 5  # Number of chunks to retrieve
+  similarity_threshold: 0.3
+  enable_reranking: false
+
+# Document Processing
+documents:
+  upload_dir: "./data/documents"
+  max_file_size_mb: 50
+  supported_formats:
+    - pdf
+    - txt
+    - docx
+    - csv
+
+# Banking Data
+banking:
+  data_file: "./data/banking_dummy_data.json"
+  default_user_id: "user_001"
+
+# Agent Settings
+agent:
+  max_conversation_history: 10
+  enable_streaming: false
+  default_intent: "question"
+
+# Logging
+logging:
+  level: "INFO"  # Options: DEBUG, INFO, WARNING, ERROR
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# API Settings
+api:
+  cors_origins:
+    - "http://localhost:8501"
+    - "http://127.0.0.1:8501"
+  max_upload_size: 52428800  # 50MB in bytes
