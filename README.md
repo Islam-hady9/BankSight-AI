@@ -1,26 +1,27 @@
 # BankSight-AI 🏦🤖
 
-A simple, local-first AI banking assistant built with **FastAPI**, **HuggingFace Transformers**, and **Streamlit** - perfect for learning RAG and AI agents!
+A **cloud-powered** AI banking assistant built with **Groq API**, **FastAPI**, and **Streamlit** - perfect for learning RAG and AI agents with lightning-fast inference!
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688.svg)](https://fastapi.tiangolo.com)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.31-red.svg)](https://streamlit.io)
-[![HuggingFace](https://img.shields.io/badge/HuggingFace-Transformers-yellow.svg)](https://huggingface.co/transformers/)
+[![Groq](https://img.shields.io/badge/Groq-API-orange.svg)](https://groq.com)
 
 ---
 
 ## 🎯 What is This?
 
-A **learning project** combining modern AI technologies:
+A **learning project** combining modern AI technologies with **ultra-fast cloud inference**:
 
 ✅ **FastAPI Backend** - Professional REST API architecture
-✅ **HuggingFace Models** - Local LLMs (Phi-3, Mistral, Llama)
+✅ **Groq API** - Lightning-fast cloud LLM inference (10-20x faster!)
 ✅ **Streamlit Frontend** - Beautiful, interactive chat UI
 ✅ **RAG System** - Ask questions about uploaded documents
 ✅ **AI Agent** - Perform banking actions via natural language
-✅ **100% Local** - No cloud, no API costs, completely private
+✅ **Bilingual** - Supports English and Arabic seamlessly
+✅ **CPU-Only** - No GPU/CUDA required, runs anywhere
 
-**Perfect for:** Learning RAG, AI agents, FastAPI, and local LLM deployment
+**Perfect for:** Learning RAG, AI agents, FastAPI, and cloud-based LLM deployment
 
 ---
 
@@ -49,8 +50,11 @@ A **learning project** combining modern AI technologies:
 │ChromaDB│ │  Dummy  │
 │(Vector)│ │  Data   │
 └────────┘ └─────────┘
-
-LLM: HuggingFace Phi-3/Mistral/Llama
+         │
+         ▼
+    ┌─────────┐
+    │ Groq AI │  ← Cloud LLM (Kimi-K2)
+    └─────────┘
 ```
 
 **Clean separation** of frontend, backend, RAG, and actions!
@@ -91,8 +95,9 @@ AI: "✅ Transfer completed! New balance: $5,330.50"
 
 ### Prerequisites
 - Python 3.9+
-- 8GB+ RAM (16GB recommended)
-- 10GB free disk space
+- 2GB+ RAM (minimal requirements!)
+- 500MB free disk space
+- **Groq API Key** (free tier available at https://console.groq.com)
 
 ### Installation
 
@@ -105,11 +110,23 @@ cd BankSight-AI
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# 3. Install dependencies
+# 3. Install dependencies (~1-2 minutes)
 pip install -r requirements.txt
 
-# 4. Done! Models will download on first run.
+# 4. Setup Groq API Key
+cp .env.example .env
+# Edit .env and add your Groq API key:
+# GROQ_API_KEY=your_api_key_here
+
+# 5. Done! No model downloads needed - instant startup!
 ```
+
+### Getting Your Groq API Key
+
+1. Visit https://console.groq.com/keys
+2. Sign up / Log in (free!)
+3. Click "Create API Key"
+4. Copy the key and paste it in `.env`
 
 ### Running the App
 
@@ -117,14 +134,12 @@ pip install -r requirements.txt
 
 **Terminal 1: Start Backend**
 ```bash
-./run_backend.sh
-# Or manually: python -m uvicorn backend.main:app --reload
+python -m uvicorn backend.main:app --reload
 ```
 
 **Terminal 2: Start Frontend**
 ```bash
-./run_frontend.sh
-# Or manually: streamlit run frontend/app.py
+streamlit run frontend/app.py
 ```
 
 **Access:**
@@ -137,6 +152,7 @@ pip install -r requirements.txt
 1. **Process Documents:** Click "Process All Documents" in sidebar
 2. **Ask a Question:** "What are the account opening requirements?"
 3. **Try an Action:** "What is my account balance?"
+4. **Try Arabic:** "مرحباً! كيف حالك؟" (Bilingual support!)
 
 ---
 
@@ -151,9 +167,10 @@ BankSight-AI/
 │   │   ├── agent.py          # Main orchestrator
 │   │   ├── intent_classifier.py
 │   │   └── query_router.py
-│   ├── llm/                   # HuggingFace LLM
-│   │   ├── huggingface_client.py
-│   │   └── prompts.py
+│   ├── llm/                   # Groq LLM Client
+│   │   ├── client.py         # LLM factory
+│   │   ├── groq_client.py    # Groq API client
+│   │   └── prompts.py        # System prompts
 │   ├── rag/                   # RAG System
 │   │   ├── document_loader.py
 │   │   ├── embeddings.py
@@ -189,12 +206,12 @@ BankSight-AI/
 |-----------|-----------|---------|
 | **Backend** | FastAPI | REST API, async support |
 | **Frontend** | Streamlit | Interactive chat UI |
-| **LLM** | HuggingFace Transformers | Local inference |
-| **Embeddings** | Sentence-Transformers | Text embeddings |
+| **LLM** | Groq API (Kimi-K2) | Ultra-fast cloud inference |
+| **Embeddings** | Sentence-Transformers | Text embeddings (CPU) |
 | **Vector DB** | ChromaDB | Semantic search |
 | **Data** | JSON | Dummy banking data |
 
-**All open-source & free!**
+**Groq free tier available!** - No credit card required to start
 
 ---
 
@@ -202,15 +219,20 @@ BankSight-AI/
 
 Edit `config.yaml` to customize:
 
-### LLM Models (Choose based on your hardware)
+### Groq API Settings
 
 ```yaml
 llm:
-  # Options:
-  model_name: "microsoft/Phi-3-mini-4k-instruct"  # 8GB RAM
-  # model_name: "mistralai/Mistral-7B-Instruct-v0.2"  # 16GB RAM
-  # model_name: "meta-llama/Llama-3-8B-Instruct"  # 18GB RAM
+  provider: "groq"  # Using Groq API for cloud inference
+
+  groq:
+    model_name: "moonshotai/kimi-k2-instruct-0905"  # Fast reasoning model
+    max_tokens: 4096        # Maximum response length
+    temperature: 0.6        # Response creativity (0.0-1.0)
+    timeout: 30             # API timeout in seconds
 ```
+
+Don't forget to add your `GROQ_API_KEY` in the `.env` file!
 
 ### RAG Settings
 
@@ -278,89 +300,81 @@ python -m pytest tests/
 
 | Component | Minimum | Recommended |
 |-----------|---------|-------------|
-| RAM | 8GB | 16GB+ |
-| Disk | 10GB | 20GB+ |
-| CPU | 4 cores | 8+ cores |
-| GPU | Not required | Speeds up inference |
+| RAM | 2GB | 4GB+ |
+| Disk | 500MB | 2GB |
+| CPU | 2 cores | 4+ cores |
+| GPU | **Not required** | Not needed - runs on CPU only! |
 
-**Models:**
-- Phi-3-mini: ~4GB download, ~8GB RAM
-- Mistral-7B: ~4GB download, ~16GB RAM
-- Llama-3-8B: ~5GB download, ~18GB RAM
+**Why so lightweight?**
+- ✅ No local model downloads (~5GB saved!)
+- ✅ All inference happens via Groq cloud API
+- ✅ Only embeddings run locally (CPU-compatible)
+- ✅ Perfect for laptops, VMs, and containers
 
 ---
 
 ## 🐛 Troubleshooting
 
-### ⚡ GPU Setup (CRITICAL for Performance)
-
-**If you have an NVIDIA GPU, you MUST install PyTorch with CUDA support!**
-
-```bash
-# Check if GPU is detected
-python -c "import torch; print('CUDA:', torch.cuda.is_available())"
-
-# If False, reinstall PyTorch with CUDA
-pip uninstall torch torchvision torchaudio -y
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-
-# Verify
-python -c "import torch; print('GPU:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'None')"
-```
-
-**Performance difference:**
-- ✅ With GPU: 3-5 seconds per query
-- ❌ Without GPU: 30-60 seconds per query
-
 ### Common Issues
+
+**Groq API Key Error:**
+```bash
+# Error: GROQ_API_KEY not found in environment variables
+# Solution: Check your .env file
+cat .env  # Should show: GROQ_API_KEY=your_key_here
+
+# If missing, copy from example:
+cp .env.example .env
+# Then edit .env and add your key
+```
 
 **Backend won't start:**
 ```bash
 # Check if port 8000 is in use
 lsof -i :8000  # Mac/Linux
 netstat -ano | findstr :8000  # Windows
+
+# Or run on different port:
+python -m uvicorn backend.main:app --port 8001
 ```
 
-**Out of memory:**
-- Use smaller model: `microsoft/Phi-3-mini-4k-instruct`
-- Enable 8-bit: `load_in_8bit: true` in config.yaml
-- Install: `pip install bitsandbytes`
+**Groq API Rate Limits:**
+- Free tier: ~30 requests/minute
+- If exceeded, wait 60 seconds or upgrade to paid tier
+- Check rate limits at https://console.groq.com/settings/limits
 
-**Slow inference:**
-- First query is always slow (10-30s) - model loading
-- Check GPU is enabled (see above)
-- Use smaller model or reduce `max_new_tokens`
+**Slow responses:**
+- Check your internet connection (all inference is cloud-based)
+- Groq API is typically very fast (1-3 seconds)
+- If slow, check Groq status: https://status.groq.com
 
 **Documents not processing:**
 - Click "Process All Documents" in sidebar
 - Check files are in `data/documents/`
-- Only PDF, TXT, DOCX, CSV supported
+- Only PDF, TXT, DOCX supported
+- Embeddings run locally (CPU) - may take a minute for large docs
 
-### 📖 Complete Troubleshooting Guide
+### 📖 Need More Help?
 
-For detailed solutions to all issues, see **[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)**
-
-Covers:
-- GPU/CUDA setup (Windows, Linux, Mac)
-- Model download issues
-- Memory problems
-- Performance optimization
-- RAG configuration
-- And more!
+For detailed solutions, check the documentation:
+- **Installation Issues:** See [QUICK_START.md](QUICK_START.md)
+- **API Configuration:** See `config.yaml` and `.env.example`
+- **Groq API Docs:** https://console.groq.com/docs
 
 ---
 
 ## 📚 Learning Resources
 
-### RAG
+### Groq API
+- [Groq Documentation](https://console.groq.com/docs)
+- [Groq API Reference](https://console.groq.com/docs/api-reference)
+- [Kimi-K2 Model Info](https://console.groq.com/docs/models)
+- [Rate Limits & Pricing](https://console.groq.com/settings/limits)
+
+### RAG (Retrieval-Augmented Generation)
 - [ChromaDB Docs](https://docs.trychroma.com/)
 - [Sentence-Transformers](https://www.sbert.net/)
 - [RAG Tutorial](https://python.langchain.com/docs/use_cases/question_answering/)
-
-### HuggingFace
-- [Transformers Docs](https://huggingface.co/docs/transformers/)
-- [Model Hub](https://huggingface.co/models)
-- [Phi-3 Model Card](https://huggingface.co/microsoft/Phi-3-mini-4k-instruct)
 
 ### FastAPI
 - [FastAPI Tutorial](https://fastapi.tiangolo.com/tutorial/)
@@ -378,19 +392,20 @@ Completing this project teaches:
 
 ### Technical Skills
 ✅ Building REST APIs with FastAPI
-✅ Working with local LLMs (HuggingFace)
+✅ Working with cloud LLM APIs (Groq)
 ✅ Implementing RAG (retrieval-augmented generation)
 ✅ Vector databases and semantic search
 ✅ AI agent patterns (intent classification, routing)
 ✅ Frontend/backend separation
 ✅ Document processing pipelines
+✅ Bilingual AI applications (English/Arabic)
 
 ### Best Practices
 ✅ Project structure and organization
-✅ Configuration management
-✅ Error handling
+✅ Configuration management with environment variables
+✅ Error handling and API integration
 ✅ Logging and debugging
-✅ Testing strategies
+✅ CPU-only deployment strategies
 
 ---
 
@@ -399,13 +414,14 @@ Completing this project teaches:
 - [x] FastAPI backend
 - [x] Streamlit frontend
 - [x] RAG system with ChromaDB
-- [x] HuggingFace LLM integration
+- [x] Groq API integration (CPU-only)
+- [x] Bilingual support (English/Arabic)
 - [x] Banking actions on dummy data
 - [x] Intent classification
-- [ ] Conversation memory
+- [ ] Conversation memory/history
 - [ ] More file types (Excel, images)
-- [ ] Response streaming
-- [ ] Model fine-tuning guide
+- [ ] Response streaming from Groq
+- [ ] Multi-model support (other Groq models)
 
 ---
 
@@ -430,7 +446,7 @@ MIT License - Free to use, modify, and learn from!
 
 ## 🙏 Acknowledgments
 
-- **HuggingFace** - Amazing open-source models
+- **Groq** - Ultra-fast cloud LLM inference
 - **FastAPI** - Modern Python web framework
 - **Streamlit** - Beautiful Python UIs
 - **ChromaDB** - Simple vector database
@@ -441,13 +457,13 @@ MIT License - Free to use, modify, and learn from!
 ## 📞 Questions?
 
 - **Setup Issues?** → [QUICK_START.md](QUICK_START.md) - Detailed installation guide
-- **GPU Problems?** → [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) - Complete troubleshooting guide
 - **Architecture?** → [ARCHITECTURE.md](ARCHITECTURE.md) - System design details
 - **Learning Path?** → [PROJECT_PLAN.md](PROJECT_PLAN.md) - 4-week roadmap
-- **Model Selection?** → [docs/MODEL_GUIDE.md](docs/MODEL_GUIDE.md) - Choose the right LLM
+- **Groq API Help?** → [Groq Documentation](https://console.groq.com/docs) - Official API docs
+- **Rate Limits?** → Check your [Groq Dashboard](https://console.groq.com/settings/limits)
 
 ---
 
 **Built with ❤️ for learning AI, RAG, and agents**
 
-**Stack:** FastAPI + HuggingFace + Streamlit | **Cost:** $0 | **Privacy:** 100% Local
+**Stack:** FastAPI + Groq API + Streamlit | **Deployment:** CPU-Only | **Speed:** Lightning-fast ⚡
