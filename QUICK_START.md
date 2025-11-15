@@ -1,25 +1,39 @@
 # BankSight-AI Quick Start Guide
 
-Get your AI banking assistant running in **under 15 minutes**!
+Get your AI banking assistant running in **under 5 minutes** with Groq's ultra-fast cloud API!
 
 ---
 
 ## 📋 Prerequisites
 
-### Hardware
-- **RAM:** 8GB minimum, 16GB recommended
-- **GPU:** Optional but recommended (RTX 4060 Ti, RTX 3060, or better)
-- **Disk:** 20GB free space (for models and data)
+### Hardware (Minimal Requirements!)
+- **RAM:** 2GB minimum, 4GB recommended
+- **GPU:** **NOT REQUIRED** - Runs entirely on CPU!
+- **Disk:** 500MB free space
+- **Internet:** Required for Groq API calls
 
 ### Software
 - **Python:** 3.9 or higher
 - **Git:** For cloning the repository
+- **Groq API Key:** Free tier available at https://console.groq.com
 
 **Check Python version:**
 ```bash
 python --version
 # Should show Python 3.9.x or higher
 ```
+
+---
+
+## 🔑 Get Your Groq API Key (1 minute)
+
+1. Visit https://console.groq.com/keys
+2. Sign up or log in (free!)
+3. Click "**Create API Key**"
+4. Copy the key (starts with `gsk_...`)
+5. Keep it handy for Step 4 below
+
+**Note:** Groq's free tier is generous - perfect for learning and development!
 
 ---
 
@@ -49,614 +63,343 @@ venv\Scripts\activate
 ### Step 3: Install Dependencies
 
 ```bash
-# Install all required packages
+# Install all required packages (~500MB, takes 1-2 minutes)
 pip install -r requirements.txt
 
 # This installs:
-# - FastAPI, Streamlit
-# - PyTorch, Transformers
-# - ChromaDB, Sentence-Transformers
-# - And more...
+# - FastAPI, Streamlit (web frameworks)
+# - Groq SDK (LLM API client)
+# - ChromaDB, Sentence-Transformers (RAG system)
+# - Document processing libraries
 ```
 
-**Note:** First install takes 5-10 minutes. Grab a coffee! ☕
+**Note:** This is **10x faster** than installing local LLM models!
 
-### Step 4: GPU Acceleration Setup ⚡ (IMPORTANT for Performance)
-
-**Why GPU matters:** With GPU, queries take **3-5 seconds**. Without GPU, they take **30-60 seconds**.
-
-#### 4.1: Verify Your GPU
-
-First, check if your NVIDIA GPU is detected by the system:
+### Step 4: Configure Groq API Key
 
 ```bash
-# Check NVIDIA driver and GPU
-nvidia-smi
+# Copy the environment template
+cp .env.example .env
+
+# Edit .env and add your Groq API key
+# On Mac/Linux:
+nano .env
+
+# On Windows:
+notepad .env
 ```
 
-**Expected output:**
-```
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 576.80                 Driver Version: 576.80         CUDA Version: 12.9     |
-|-----------------------------------------+------------------------+----------------------+
-| GPU  Name                  Driver-Model | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-|   0  NVIDIA GeForce RTX 4060 Ti   WDDM  |   00000000:01:00.0  On |                  N/A |
-+-----------------------------------------------------------------------------------------+
+**In the `.env` file, add:**
+```bash
+GROQ_API_KEY=gsk_your_actual_api_key_here
 ```
 
-✅ **If you see your GPU listed:** Great! Continue to step 4.2.
+**Save and close the file.**
 
-❌ **If command not found:** You need to install [NVIDIA drivers](https://www.nvidia.com/Download/index.aspx) first.
-
-#### 4.2: Verify PyTorch GPU Support
-
-Check if PyTorch can access your GPU:
+### Step 5: Verify Configuration
 
 ```bash
-python -c "import torch; print('PyTorch version:', torch.__version__); print('CUDA available:', torch.cuda.is_available())"
+# Check if your API key is set
+cat .env  # Mac/Linux
+type .env  # Windows
+
+# Should show:
+# GROQ_API_KEY=gsk_...
 ```
-
-**✅ GOOD - GPU Detected:**
-```
-PyTorch version: 2.9.0+cu121
-CUDA available: True
-```
-
-**❌ PROBLEM - CPU-Only Version:**
-```
-PyTorch version: 2.9.0+cpu
-CUDA available: False
-```
-
-If you see `+cpu` or `CUDA available: False`, continue to step 4.3.
-
-#### 4.3: Install PyTorch with CUDA Support (Windows)
-
-**⚠️ Common Issue:** If you installed dependencies with `pip install -r requirements.txt`, you likely got the **CPU-only version** of PyTorch by default.
-
-**Fix: Reinstall PyTorch with CUDA support**
-
-```powershell
-# 1. Uninstall CPU-only version
-pip uninstall torch torchvision torchaudio -y
-
-# 2. Install CUDA-enabled PyTorch (for CUDA 12.x)
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-
-# 3. Verify GPU is now detected
-python -c "import torch; print('CUDA available:', torch.cuda.is_available()); print('GPU:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'None')"
-```
-
-**Expected output after reinstall:**
-```
-CUDA available: True
-GPU: NVIDIA GeForce RTX 4060 Ti
-```
-
-#### 4.4: Choose the Right CUDA Version
-
-Your NVIDIA driver supports multiple CUDA versions. Check your driver's CUDA version:
-
-```bash
-nvidia-smi
-# Look for "CUDA Version: X.X" in the output
-```
-
-Then install matching PyTorch:
-
-| Driver CUDA Version | PyTorch Installation |
-|---------------------|----------------------|
-| **CUDA 12.x** (12.1-12.9) | `pip install torch --index-url https://download.pytorch.org/whl/cu121` |
-| **CUDA 11.8** | `pip install torch --index-url https://download.pytorch.org/whl/cu118` |
-| **CUDA 12.4+** | `pip install torch --index-url https://download.pytorch.org/whl/cu124` |
-
-**Note:** CUDA 12.1 PyTorch works with all CUDA 12.x drivers (backward compatible).
-
-#### 4.5: Final Verification
-
-Run this comprehensive check:
-
-```bash
-python -c "import torch; print('='*50); print('PyTorch Version:', torch.__version__); print('CUDA Available:', torch.cuda.is_available()); print('CUDA Version:', torch.version.cuda); print('GPU Count:', torch.cuda.device_count()); print('GPU Name:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'None'); print('GPU VRAM:', round(torch.cuda.get_device_properties(0).total_memory/1024**3, 1), 'GB' if torch.cuda.is_available() else ''); print('='*50)"
-```
-
-**Perfect output example:**
-```
-==================================================
-PyTorch Version: 2.9.0+cu121
-CUDA Available: True
-CUDA Version: 12.1
-GPU Count: 1
-GPU Name: NVIDIA GeForce RTX 4060 Ti
-GPU VRAM: 16.0 GB
-==================================================
-```
-
-✅ **If all checks pass:** You're ready to run the app with GPU acceleration!
-
-❌ **If still showing False:** See troubleshooting section below for advanced solutions.
 
 ---
 
-## ▶️ Running the Application
-
-BankSight-AI uses a **two-part architecture**:
-1. **Backend** (FastAPI) - Handles AI, RAG, and data
-2. **Frontend** (Streamlit) - Provides the chat interface
-
-You need **two terminal windows** running simultaneously.
+## 🎯 Running the Application
 
 ### Terminal 1: Start Backend
 
 ```bash
-# Make sure you're in the BankSight-AI directory
-cd BankSight-AI
+# Make sure virtual environment is activated
+source venv/bin/activate  # Mac/Linux
+# OR
+venv\Scripts\activate  # Windows
 
-# Activate virtual environment (if not already)
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Start backend
-./run_backend.sh
-
-# Or manually:
-# python -m uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
+# Start FastAPI backend
+python -m uvicorn backend.main:app --reload
 ```
 
 **Expected output:**
 ```
-🏦 Starting BankSight AI Backend...
-INFO:     Loading model: mistralai/Mistral-7B-Instruct-v0.3
-INFO:     This may take several minutes on first run...
-[Downloading model... ~14GB, 5-15 minutes]
-INFO:     Model loaded successfully
-INFO:     ✅ BankSight AI API ready!
-INFO:     Uvicorn running on http://0.0.0.0:8000
+INFO:     Uvicorn running on http://127.0.0.1:8000
+INFO:     ✅ Using Groq API for LLM inference (CPU-only, no GPU needed)
+INFO:     ✅ Groq client initialized successfully
+INFO:     Application startup complete.
 ```
-
-**First run:** Model download takes 5-15 minutes. Subsequent starts are instant!
 
 ### Terminal 2: Start Frontend
 
-**Open a NEW terminal window:**
+**Open a NEW terminal**, then:
 
 ```bash
 # Navigate to project directory
 cd BankSight-AI
 
 # Activate virtual environment
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv/bin/activate  # Mac/Linux
+# OR
+venv\Scripts\activate  # Windows
 
-# Start frontend
-./run_frontend.sh
-
-# Or manually:
-# streamlit run frontend/app.py
+# Start Streamlit frontend
+streamlit run frontend/app.py
 ```
 
 **Expected output:**
 ```
-🏦 Starting BankSight AI Frontend...
+You can now view your Streamlit app in your browser.
 
-  You can now view your Streamlit app in your browser.
-
-  Local URL: http://localhost:8501
-  Network URL: http://192.168.1.x:8501
+Local URL: http://localhost:8501
 ```
 
-### Access the Application
+---
 
-Open your browser and go to:
-- **Frontend UI:** http://localhost:8501
-- **API Docs:** http://localhost:8000/docs
+## 🌐 Access the Application
+
+- **Frontend (Chat UI):** http://localhost:8501
+- **Backend API Docs:** http://localhost:8000/docs
 - **Health Check:** http://localhost:8000/health
 
 ---
 
-## 🎯 First Steps
+## 🎓 First Use Tutorial
 
-### 1. Process Sample Documents
+### 1. Process Documents
 
-When you first open the frontend:
+In the Streamlit interface sidebar:
+1. Click "**🔄 Process All Documents**"
+2. Wait ~10-30 seconds
+3. You should see: "✅ Processed N documents"
 
-1. Look at the **left sidebar**
-2. Find the **"Process Documents"** section
-3. Click **"🔄 Process All Documents"**
-4. Wait ~10 seconds while it processes sample banking documents
+This indexes the sample banking documents for RAG (question answering).
 
-**What this does:**
-- Loads `banking_policy.txt` and `faq.txt`
-- Chunks them into smaller pieces
-- Generates embeddings
-- Stores in ChromaDB vector database
+### 2. Ask a Question (RAG)
 
-### 2. Try Document Q&A (RAG)
-
-Ask questions about the sample documents:
-
+In the chat box, try:
 ```
-"What are the account opening requirements?"
-"How much is the wire transfer fee?"
-"What is the daily ATM withdrawal limit?"
-"What's the overdraft policy?"
+What are the wire transfer fees?
 ```
 
-**Expected result:**
-- AI retrieves relevant document sections
-- Generates an answer with sources
-- Shows which document the answer came from
+**Expected:** The AI will search the documents and provide an answer with source citations.
 
-### 3. Try Banking Actions
-
-Ask about your dummy banking data:
+### 3. Try a Banking Action
 
 ```
-"What is my checking account balance?"
-"Show my last 5 transactions"
-"Transfer $100 from checking to savings"
-"Search for grocery transactions"
+What is my checking account balance?
 ```
 
-**Expected result:**
-- AI understands your intent
-- Executes the appropriate banking function
-- Returns formatted results
+**Expected:** The AI will fetch your account balance from dummy data.
+
+### 4. Test Bilingual Support
+
+**English:**
+```
+Hello! Who are you?
+```
+
+**Arabic:**
+```
+مرحباً! من أنت؟
+```
+
+**Expected:** The AI responds in the same language you used!
+
+### 5. More Examples
+
+**Questions (uses RAG):**
+- "What are the requirements to open an account?"
+- "Tell me about overdraft protection"
+- "What fees apply to international transfers?"
+
+**Actions (uses dummy banking data):**
+- "Show my last 5 transactions"
+- "Transfer $100 from checking to savings"
+- "Search for grocery transactions"
+
+**Chitchat:**
+- "Thank you!"
+- "What can you do?"
+- "Good morning"
 
 ---
 
-## 📁 Project Structure Overview
+## 🔧 Troubleshooting
 
+### Backend Won't Start
+
+**Error: `GROQ_API_KEY not found`**
+```bash
+# Check your .env file exists
+ls -la .env
+
+# Check it has the API key
+cat .env
+
+# Make sure the key starts with 'gsk_'
 ```
-BankSight-AI/
-├── backend/                    # FastAPI Backend
-│   ├── main.py                # 🚀 API entry point
-│   ├── agent/                 # AI agent logic
-│   ├── llm/                   # HuggingFace integration
-│   ├── rag/                   # RAG system
-│   └── actions/               # Banking functions
-│
-├── frontend/                   # Streamlit Frontend
-│   ├── app.py                 # 🎨 Chat UI
-│   └── utils/api_client.py    # Backend communication
-│
-├── data/
-│   ├── documents/             # 📄 Upload PDFs here
-│   ├── banking_dummy_data.json # 💰 Fake accounts/transactions
-│   └── vector_db/             # 🔍 ChromaDB storage
-│
-├── models/                    # 🤖 Downloaded LLM models (auto-created)
-├── config.yaml                # ⚙️ Configuration
-└── requirements.txt           # 📦 Dependencies
+
+**Error: `Port 8000 already in use`**
+```bash
+# Find what's using port 8000
+lsof -i :8000  # Mac/Linux
+netstat -ano | findstr :8000  # Windows
+
+# Use a different port
+python -m uvicorn backend.main:app --port 8001 --reload
 ```
+
+### Slow Responses
+
+**Groq API is usually very fast (1-3 seconds). If slow:**
+- Check your internet connection
+- Check Groq API status: https://status.groq.com
+- You might have hit rate limits (free tier: ~30 requests/min)
+
+### No Documents in Vector Store
+
+**If RAG doesn't work:**
+```bash
+# Check if documents exist
+ls data/documents/
+
+# Manually process them via API
+curl http://localhost:8000/api/documents/process-all
+
+# Or use the Streamlit sidebar button:
+# "🔄 Process All Documents"
+```
+
+### Frontend Shows "Connection Error"
+
+**Backend is not running:**
+1. Check Terminal 1 - backend should be running
+2. Visit http://localhost:8000/health
+3. Should return: `{"status": "healthy"}`
 
 ---
 
-## ⚙️ Configuration
+## ⚙️ Configuration (Optional)
 
-### Change LLM Model
+Edit `config.yaml` to customize:
 
-Edit `config.yaml`:
+### Change Groq Model
 
 ```yaml
 llm:
-  # Default (Recommended for RTX 4060 Ti):
-  model_name: "mistralai/Mistral-7B-Instruct-v0.3"
-
-  # Other options:
-  # model_name: "microsoft/Phi-3-mini-4k-instruct"  # Faster, less VRAM
-  # model_name: "meta-llama/Meta-Llama-3-8B-Instruct"  # Better quality
-  # model_name: "Qwen/Qwen2-7B-Instruct"  # Excellent reasoning
+  groq:
+    model_name: "moonshotai/kimi-k2-instruct-0905"  # Default
+    # Or try other models:
+    # model_name: "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"
+    # model_name: "anthropic/claude-3.5-sonnet"
 ```
-
-See **[docs/MODEL_GUIDE.md](docs/MODEL_GUIDE.md)** for detailed model recommendations.
 
 ### Adjust RAG Settings
 
 ```yaml
 rag:
-  chunk_size: 500       # Increase for more context per chunk
-  chunk_overlap: 50     # Increase for better continuity
-  top_k: 5              # Number of chunks to retrieve
+  chunk_size: 500        # Increase for more context per chunk
+  chunk_overlap: 50      # Overlap between chunks
+  top_k: 5               # Number of chunks to retrieve (increase for more context)
 ```
 
-### GPU Memory Settings
-
-If running out of VRAM:
+### Change LLM Parameters
 
 ```yaml
 llm:
-  load_in_8bit: true   # Halves VRAM usage
-  # OR
-  load_in_4bit: true   # Quarters VRAM usage
-```
-
-Then: `pip install bitsandbytes`
-
----
-
-## 🐛 Troubleshooting
-
-### GPU/CUDA Issues ⚡
-
-**Problem: `torch.cuda.is_available()` returns False**
-
-**Cause 1: CPU-only PyTorch installed**
-```powershell
-# Check PyTorch version
-python -c "import torch; print(torch.__version__)"
-# If shows "2.x.x+cpu", you have CPU-only version
-```
-
-**Solution:**
-```powershell
-pip uninstall torch torchvision torchaudio -y
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-```
-
-**Cause 2: NVIDIA drivers not installed or outdated**
-```bash
-# Check if nvidia-smi works
-nvidia-smi
-```
-
-**Solution:** Download and install latest drivers from [NVIDIA's website](https://www.nvidia.com/Download/index.aspx)
-
-**Cause 3: CUDA version mismatch**
-
-Check your driver's CUDA version with `nvidia-smi`, then install matching PyTorch:
-- CUDA 12.x → Use `cu121`
-- CUDA 11.8 → Use `cu118`
-
-**Verification after fix:**
-```bash
-python -c "import torch; print('CUDA:', torch.cuda.is_available()); print('GPU:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'None')"
+  groq:
+    temperature: 0.6     # 0.0 = deterministic, 1.0 = creative
+    max_tokens: 4096     # Maximum response length
+    timeout: 30          # API timeout (seconds)
 ```
 
 ---
 
-### Backend Won't Start
+## 📊 Performance Comparison
 
-**Error:** `Port 8000 already in use`
+| Metric | Local LLM (HuggingFace) | Groq API (Cloud) |
+|--------|-------------------------|------------------|
+| **Install Time** | 10-15 minutes | 1-2 minutes |
+| **Install Size** | ~5GB | ~500MB |
+| **RAM Required** | 8-16GB | 2-4GB |
+| **GPU Required** | Recommended | **Not required** |
+| **First Query** | 30-60 seconds | 2-5 seconds |
+| **Subsequent Queries** | 3-10 seconds | 1-3 seconds |
+| **Startup Time** | 10-30 seconds (model load) | Instant |
 
-```bash
-# Find and kill the process
-# On Mac/Linux:
-lsof -i :8000
-kill -9 <PID>
-
-# On Windows:
-netstat -ano | findstr :8000
-taskkill /PID <PID> /F
-```
-
-**Error:** `Module not found`
-
-```bash
-# Reinstall dependencies
-pip install -r requirements.txt
-```
-
-### Frontend Won't Connect
-
-**Error:** `Connection refused`
-
-- ✅ Make sure backend is running (Terminal 1)
-- ✅ Check backend URL in `config.yaml`
-- ✅ Try http://localhost:8000/health in browser
-
-### Model Download Issues
-
-**Error:** `Connection timeout` or `Download failed`
-
-```bash
-# Try downloading manually
-python -c "
-from transformers import AutoModelForCausalLM
-model = AutoModelForCausalLM.from_pretrained(
-    'mistralai/Mistral-7B-Instruct-v0.3',
-    cache_dir='./models'
-)
-"
-```
-
-**Error:** `Access denied` (for Llama models)
-
-1. Go to: https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct
-2. Click "Request Access"
-3. Wait for approval (usually instant)
-4. Login: `huggingface-cli login`
-
-### Out of Memory (OOM)
-
-**Error:** `CUDA out of memory`
-
-**Solutions:**
-
-1. **Use smaller model:**
-   ```yaml
-   model_name: "microsoft/Phi-3-mini-4k-instruct"
-   ```
-
-2. **Enable 8-bit quantization:**
-   ```yaml
-   load_in_8bit: true
-   ```
-   ```bash
-   pip install bitsandbytes
-   ```
-
-3. **Reduce token limit:**
-   ```yaml
-   max_new_tokens: 500  # Instead of 1000
-   ```
-
-4. **Close other GPU applications** (games, Chrome with GPU acceleration, etc.)
-
-### Slow Inference
-
-**First query is always slow** (10-30 seconds):
-- This is normal! Model is loading into VRAM
-- Subsequent queries are much faster (2-5 seconds)
-
-**All queries are slow:**
-- Check GPU is being used: `device: "auto"` in config
-- Try smaller model (Phi-3-mini)
-- Check VRAM usage: `watch -n 1 nvidia-smi`
-
-### ChromaDB Errors
-
-**Error:** `Collection not found` or `Database corrupted`
-
-```bash
-# Delete and recreate
-rm -rf data/vector_db/
-
-# Restart backend and click "Process All Documents" again
-```
-
-### Documents Not Processing
-
-1. ✅ Check files are in `data/documents/`
-2. ✅ Verify file formats (PDF, TXT, DOCX, CSV only)
-3. ✅ Check file sizes (max 50MB by default)
-4. ✅ Look at backend logs for errors
+**Result:** Groq API is **10-20x faster** with **minimal system requirements**!
 
 ---
 
-## 💡 Tips & Tricks
+## 🎯 Next Steps
 
-### Monitor GPU Usage
+Once you're comfortable:
 
-```bash
-# Watch GPU memory in real-time
-watch -n 1 nvidia-smi
+1. **Upload Your Own Documents**
+   - Click "Upload Document" in sidebar
+   - Upload PDFs, TXT, DOCX files
+   - Ask questions about them!
 
-# Or on Windows:
-nvidia-smi -l 1
-```
+2. **Explore the API**
+   - Visit http://localhost:8000/docs
+   - Try the interactive API documentation
+   - Test endpoints directly
 
-### Speed Up Development
+3. **Customize Prompts**
+   - Edit `backend/llm/prompts.py`
+   - Change system prompts
+   - Adjust response styles
 
-Backend has auto-reload enabled. Just edit Python files and it restarts automatically!
+4. **Review Architecture**
+   - Read `ARCHITECTURE.md`
+   - Understand the RAG pipeline
+   - Learn about intent classification
 
-Frontend also has auto-reload. Save changes and Streamlit refreshes instantly.
-
-### Clear Vector Database
-
-```bash
-rm -rf data/vector_db/
-# Then restart backend
-```
-
-### View API Documentation
-
-Go to http://localhost:8000/docs for interactive API documentation (Swagger UI).
-
-Test endpoints directly from your browser!
-
-### Add Your Own Documents
-
-1. Copy PDFs/TXT files to `data/documents/`
-2. Click "Process All Documents" in UI
-3. Ask questions about your documents!
-
-### Modify Dummy Banking Data
-
-Edit `data/banking_dummy_data.json`:
-```json
-{
-  "accounts": [
-    {
-      "type": "checking",
-      "balance": 10000.00  // ← Change this
-    }
-  ]
-}
-```
-
-Restart backend to see changes.
+5. **Deploy to Production**
+   - Use Docker (see Dockerfile if available)
+   - Deploy to cloud (Heroku, Render, Railway)
+   - Scale with Kubernetes
 
 ---
 
-## 📊 Performance Expectations
+## 📚 Additional Resources
 
-### With GPU (RTX 4060 Ti):
-- **First query:** ~10-15 seconds (model loading)
-- **Subsequent queries:** ~3-5 seconds
-- **Document processing:** ~1-2 seconds per document
-
-### CPU Only:
-- **First query:** ~60-90 seconds
-- **Subsequent queries:** ~15-30 seconds
-- **Document processing:** ~5-10 seconds per document
+- **README.md** - Project overview and features
+- **ARCHITECTURE.md** - System design details
+- **PROJECT_PLAN.md** - Learning roadmap
+- **Groq Docs** - https://console.groq.com/docs
+- **FastAPI Docs** - https://fastapi.tiangolo.com
+- **Streamlit Docs** - https://docs.streamlit.io
 
 ---
 
-## 🎓 Next Steps
+## 💡 Pro Tips
 
-### Learn the System
-1. **Read:** [ARCHITECTURE.md](ARCHITECTURE.md) - Understand the design
-2. **Explore:** [docs/MODEL_GUIDE.md](docs/MODEL_GUIDE.md) - Choose better models
-3. **Study:** [PROJECT_PLAN.md](PROJECT_PLAN.md) - Learning roadmap
-
-### Customize
-1. Upload your own documents
-2. Modify banking data
-3. Try different LLM models
-4. Adjust RAG parameters
-
-### Extend
-1. Add more banking actions
-2. Improve intent classification
-3. Add conversation memory
-4. Build new features!
+1. **Rate Limits:** Groq free tier is generous, but don't spam! ~30 requests/min.
+2. **Context Size:** Groq models support large contexts (up to 128K tokens).
+3. **Streaming:** For long responses, consider implementing streaming (see Groq docs).
+4. **Caching:** RAG results are based on vector search - same questions get different results based on retrieved context.
+5. **Bilingual:** The system auto-detects language - no configuration needed!
 
 ---
 
-## 📞 Need Help?
+## 🆘 Getting Help
 
-### Documentation
-- **Architecture:** [ARCHITECTURE.md](ARCHITECTURE.md)
-- **Model Selection:** [docs/MODEL_GUIDE.md](docs/MODEL_GUIDE.md)
-- **Project Plan:** [PROJECT_PLAN.md](PROJECT_PLAN.md)
+**Common Issues:**
+- `.env` file not found → Make sure you copied `.env.example` to `.env`
+- API key invalid → Get a new key from https://console.groq.com/keys
+- Port already in use → Change port with `--port 8001`
+- Slow responses → Check internet connection and Groq status
 
-### Common Issues
-- Backend won't start → Check port 8000
-- Frontend can't connect → Make sure backend is running
-- Out of memory → Use smaller model or enable 8-bit
-- Slow inference → First query is always slow, be patient!
-
-### Still Stuck?
-1. Check backend logs (Terminal 1)
-2. Check frontend logs (Terminal 2)
-3. Try the health check: http://localhost:8000/health
-4. Create an issue on GitHub
+**Need More Help?**
+- Check GitHub Issues
+- Review error messages in Terminal 1 (backend logs)
+- Visit Groq support: https://console.groq.com/support
 
 ---
 
-## ✅ Quick Reference
+**You're all set! Enjoy building with BankSight AI! 🚀**
 
-```bash
-# Start backend (Terminal 1)
-./run_backend.sh
-
-# Start frontend (Terminal 2)
-./run_frontend.sh
-
-# Access
-Frontend:  http://localhost:8501
-API Docs:  http://localhost:8000/docs
-Health:    http://localhost:8000/health
-
-# Stop
-Ctrl+C in each terminal
-```
-
----
-
-**Ready to start?** Fire up both terminals and open http://localhost:8501! 🚀
-
-**First time:** Model download takes 5-15 minutes. After that, startup is instant!
-
----
-
-**Have fun learning AI, RAG, and agents!** 🎓
+**Stack:** FastAPI + Groq API + Streamlit | **Deployment:** CPU-Only | **Speed:** Lightning-fast ⚡
