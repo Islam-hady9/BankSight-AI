@@ -80,6 +80,14 @@ embeddings:
   dimension: 384
   device: "cuda"  # Use GPU for fast embedding generation (falls back to CPU if no GPU)
 
+# Agent Settings
+agent:
+  # Use LangChain agent with conversation memory and tool calling
+  # If false, falls back to classic intent classification routing
+  use_langchain: true
+  max_iterations: 5  # Maximum tool call iterations
+  verbose: true  # Enable verbose logging for agent
+
 # Vector Store Settings
 vector_store:
   type: "chromadb"

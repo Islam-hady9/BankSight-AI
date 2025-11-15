@@ -117,6 +117,19 @@ class Config(BaseSettings):
         """Deprecated: Use llm_hf_cache_dir instead"""
         return self.llm_hf_cache_dir
 
+    # Agent Settings
+    @property
+    def agent_use_langchain(self) -> bool:
+        return self._config_data.get("agent", {}).get("use_langchain", True)
+
+    @property
+    def agent_max_iterations(self) -> int:
+        return self._config_data.get("agent", {}).get("max_iterations", 5)
+
+    @property
+    def agent_verbose(self) -> bool:
+        return self._config_data.get("agent", {}).get("verbose", True)
+
     @property
     def embeddings_model_name(self) -> str:
         return self._config_data.get("embeddings", {}).get("model_name", "sentence-transformers/all-MiniLM-L6-v2")
