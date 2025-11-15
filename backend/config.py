@@ -18,6 +18,7 @@ class Config(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = False
+        extra = "ignore"  # Ignore extra environment variables (like GROQ_API_KEY)
 
     def __init__(self, **kwargs):
         # Load YAML config
